@@ -5,7 +5,14 @@ import type { UserProfile } from "../types/index";
 
 function Profile() {
   const [profile, setProfile] =
-    useState<UserProfile>(mockProfile);
+    useState<UserProfile>(() => {
+      const savedProfile =
+        localStorage.getItem("profile");
+
+      return savedProfile
+        ? JSON.parse(savedProfile)
+        : mockProfile;
+    });
 
   return (
     <div>
@@ -16,7 +23,14 @@ function Profile() {
       <div className="mt-6">
         <ProfileForm
           profile={profile}
-          onSave={setProfile}
+          onSave={(updatedProfile) => {
+            setProfile(updatedProfile);
+          
+            localStorage.setItem(
+              "profile",
+              JSON.stringify(updatedProfile)
+            );
+          }}
         />
       </div>
 

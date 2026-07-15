@@ -4,14 +4,28 @@ import JobForm from "../components/JobForm";
 import type { Job } from "../types/index";
 
 function Jobs() {
-  const [jobs, setJobs] =
-    useState<Job[]>(mockJobs);
+  const [jobs, setJobs] = useState<Job[]>(() => {
+    const savedJobs = localStorage.getItem("jobs");
+
+    return savedJobs
+      ? JSON.parse(savedJobs)
+      : mockJobs;
+  });
 
   function addJob(job: Job) {
-    setJobs((currentJobs) => [
-      ...currentJobs,
-      job,
-    ]);
+    setJobs((currentJobs) => {
+      const updatedJobs = [
+        ...currentJobs,
+        job,
+      ];
+    
+      localStorage.setItem(
+        "jobs",
+        JSON.stringify(updatedJobs)
+      );
+    
+      return updatedJobs;
+    });
   }
 
   return (

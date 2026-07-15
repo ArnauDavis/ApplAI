@@ -9,24 +9,40 @@ import type {
 } from "../types/index";
 
 function Applications() {
-  const [applications, setApplications] =
-    useState<JobApplication[]>(mockApplications);
+const [applications, setApplications] =
+  useState<JobApplication[]>(() => {
+    const savedApplications =
+      localStorage.getItem("applications");
 
-  function updateStatus(
-    id: string,
-    status: JobApplication["status"]
-  ) {
-    setApplications((currentApplications) =>
-      currentApplications.map((application) =>
-        application.id === id
-          ? {
-              ...application,
-              status,
-            }
-          : application
-      )
+    return savedApplications
+      ? JSON.parse(savedApplications)
+      : mockApplications;
+  });
+
+function updateStatus(
+  id: string,
+  status: JobApplication["status"]
+) {
+  setApplications((currentApplications) => {
+    const updatedApplications =
+      currentApplications.map(
+        (application) =>
+          application.id === id
+            ? {
+                ...application,
+                status,
+              }
+            : application
+      );
+
+    localStorage.setItem(
+      "applications",
+      JSON.stringify(updatedApplications)
     );
-  }
+
+    return updatedApplications;
+  });
+}
 
   return (
     <div>

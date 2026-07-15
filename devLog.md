@@ -526,34 +526,81 @@ import type { UserProfile } from "../types/index";
 
 ## Milestone 4 — Application Interaction
 
+Status: IN PROGRESS
+
 Goals:
 
 Move from displaying static data to allowing users to create and modify data.
 
-Planned tasks:
+Completed:
 
-✅ Create profile editing form.
-✅ Create job entry form.
-✅ Add application status updates.
-✅ Introduce local state management.
-✅ Improve reusable UI components.
+✅ Created ProfileForm component  
+✅ Added profile editing functionality  
+✅ Added React state management for profile data  
+✅ Created JobForm component  
+✅ Added job creation functionality  
+✅ Added application status update functionality  
+✅ Created reusable ApplicationStatusSelect component  
+✅ Added localStorage persistence for profile data  
+✅ Added localStorage persistence for job data  
+✅ Added localStorage persistence for application data  
 
-Status:
+Current application behavior:
 
-Complete
+- Users can edit profile information.
+- Users can create new job opportunities.
+- Users can update application statuses.
+- User changes persist after browser refresh.
+
+Current data flow:
+
+
+React Components
+|
+v
+Page State
+|
+v
+localStorage
+
+Implementation decisions:
+
+- Kept state ownership at the page level.
+- Used reusable child components for forms and controls.
+- Used localStorage as temporary persistence before backend implementation.
+- Designed data flow so localStorage can later be replaced with API calls.
+
+Remaining Milestone 4 tasks:
+
+* Improve user input validation.
+* Add additional job fields.
+* Add application creation flow.
+* Improve UI feedback.
 
 
 ## Milestone 5 — Backend
 
-Create:
+Status: PLANNED
 
-* API.
-* Database.
-* Authentication.
+Technology decisions:
 
-Status:
+✅ Node.js + TypeScript  
+✅ Express API framework  
+✅ PostgreSQL database  
+✅ Prisma ORM  
 
-Future.
+Goals:
+
+Create a backend API that replaces frontend mock data and localStorage persistence.
+
+Planned tasks:
+
+* Create backend project.
+* Configure Express server.
+* Connect PostgreSQL database.
+* Add Prisma database models.
+* Create API routes.
+* Connect React frontend to backend.
 
 ---
 
@@ -599,21 +646,25 @@ AI-Job-Search-Assistant/
 ✅ Backend direction selected: Node.js + TypeScript + Express.
 ✅ Database selected: PostgreSQL.
 ✅ ORM selected: Prisma.
+✅ Frontend interaction architecture established.
+✅ Temporary persistence implemented with localStorage.
 
 ---
 
 # Current Next Step
 
 
-Continue Milestone 4 — Application Interaction.
+Complete remaining frontend interaction improvements.
 
-Completed:
+Next planned milestone:
 
-✅ Profile editing
-✅ Job creation
-✅ Application status updates
+Begin backend implementation.
 
-Next frontend interaction features will be completed before beginning backend implementation.
+Backend stack:
+
+Node.js + TypeScript + Express  
+PostgreSQL  
+Prisma ORM
 
 ---
 
