@@ -427,19 +427,6 @@ Completed:
 ✅ Added application routes
 ✅ Connected navigation links to pages
 
-Current frontend structure:
-
-src/
-├── App.tsx
-├── main.tsx
-├── components/
-│ ├── Header.tsx
-│ └── Navigation.tsx
-└── pages/
-├── Dashboard.tsx
-├── Profile.tsx
-├── Jobs.tsx
-└── Applications.tsx
 
 Implementation decisions:
 
@@ -485,15 +472,6 @@ Completed:
 ✅ Connected Applications page to application data  
 ✅ Connected Dashboard page to application summaries 
 
-Current data structure:
-
-src/
-├── data/
-│ └── mockData.ts
-│
-├── types/
-│ └── index.ts
-
 
 Data flow:
 
@@ -526,7 +504,7 @@ import type { UserProfile } from "../types/index";
 
 ## Milestone 4 — Application Interaction
 
-Status: IN PROGRESS
+Status: COMPLETE
 
 Goals:
 
@@ -539,44 +517,65 @@ Completed:
 ✅ Added React state management for profile data  
 ✅ Created JobForm component  
 ✅ Added job creation functionality  
-✅ Added application status update functionality  
-✅ Created reusable ApplicationStatusSelect component  
+✅ Created ApplicationStatusSelect component  
+✅ Added application status updates  
+✅ Created ApplicationForm component  
+✅ Added application creation workflow  
 ✅ Added localStorage persistence for profile data  
 ✅ Added localStorage persistence for job data  
 ✅ Added localStorage persistence for application data  
+✅ Created frontend data service layer  
+✅ Removed direct localStorage usage from page components  
 
 Current application behavior:
 
-- Users can edit profile information.
-- Users can create new job opportunities.
+- Users can create and update profile information.
+- Users can create job opportunities.
+- Users can create applications from available jobs.
 - Users can update application statuses.
-- User changes persist after browser refresh.
+- User data persists after browser refresh.
 
-Current data flow:
+Current frontend data flow:
 
-
-React Components
+Components
 |
 v
-Page State
+Pages
+|
+v
+Services
 |
 v
 localStorage
 
+
 Implementation decisions:
 
-- Kept state ownership at the page level.
-- Used reusable child components for forms and controls.
-- Used localStorage as temporary persistence before backend implementation.
-- Designed data flow so localStorage can later be replaced with API calls.
+- Components are responsible for UI only.
+- Pages manage application state.
+- Services manage data persistence.
+- Data storage is abstracted behind a service layer.
+- localStorage is being used as temporary persistence before backend implementation.
 
-Remaining Milestone 4 tasks:
+Future replacement:
 
-* Improve user input validation.
-* Add additional job fields.
-* Add application creation flow.
-* Improve UI feedback.
 
+Components
+|
+v
+Pages
+|
+v
+Services
+|
+v
+API
+|
+v
+Prisma
+|
+v
+PostgreSQL
 
 ## Milestone 5 — Backend
 
@@ -620,7 +619,6 @@ Future.
 
 # Current Project Structure
 
-Planned:
 
 ```
 AI-Job-Search-Assistant/
@@ -631,6 +629,38 @@ AI-Job-Search-Assistant/
 ├── src/
 │
 └── ...
+```
+
+Current frontend structure:
+
+```
+src/
+├── App.tsx
+├── main.tsx
+│
+├── components/
+│   ├── Header.tsx
+│   ├── Navigation.tsx
+│   ├── ProfileForm.tsx
+│   ├── JobForm.tsx
+│   ├── ApplicationForm.tsx
+│   └── ApplicationStatusSelect.tsx
+│
+├── pages/
+│   ├── Dashboard.tsx
+│   ├── Profile.tsx
+│   ├── Jobs.tsx
+│   └── Applications.tsx
+│
+├── data/
+│   └── mockData.ts
+│
+├── services/
+│   └── storageService.ts
+│
+└── types/
+    └── index.ts
+
 ```
 
 ---
@@ -654,17 +684,19 @@ AI-Job-Search-Assistant/
 # Current Next Step
 
 
-Complete remaining frontend interaction improvements.
+Begin Milestone 5 — Backend.
 
-Next planned milestone:
+First backend task:
 
-Begin backend implementation.
+Create backend project structure alongside the React frontend.
 
-Backend stack:
+Backend will be developed separately from the frontend:
+AI-Job-Search-Assistant/
 
-Node.js + TypeScript + Express  
-PostgreSQL  
-Prisma ORM
+├── frontend/
+└── backend/
+The frontend will continue using the service layer while backend development begins.
+The next step will be creating the backend project without touching the React app. We will create only the backend folder and initialize Node + TypeScript.
 
 ---
 

@@ -3,46 +3,58 @@ import {
   mockApplications,
   mockJobs,
 } from "../data/mockData";
+import ApplicationForm from "../components/ApplicationForm";
 import ApplicationStatusSelect from "../components/ApplicationStatusSelect";
+import {
+  getApplications,
+  saveApplications,
+} from "../services/storageService";
 import type {
   JobApplication,
 } from "../types/index";
 
 function Applications() {
-const [applications, setApplications] =
-  useState<JobApplication[]>(() => {
-    const savedApplications =
-      localStorage.getItem("applications");
-
-    return savedApplications
-      ? JSON.parse(savedApplications)
-      : mockApplications;
-  });
-
-function updateStatus(
-  id: string,
-  status: JobApplication["status"]
-) {
-  setApplications((currentApplications) => {
-    const updatedApplications =
-      currentApplications.map(
-        (application) =>
-          application.id === id
-            ? {
-                ...application,
-                status,
-              }
-            : application
-      );
-
-    localStorage.setItem(
-      "applications",
-      JSON.stringify(updatedApplications)
+  const [applications, setApplications] =
+    useState<JobApplication[]>(() =>
+      getApplications(mockApplications)
     );
 
-    return updatedApplications;
-  });
-}
+  function updateStatus(
+    id: string,
+    status: JobApplication["status"]
+  ) {
+    setApplications((currentApplications) => {
+      const updatedApplications =
+        currentApplications.map(
+          (application) =>
+            application.id === id
+              ? {
+                  ...application,
+                  status,
+                }
+              : application
+        );
+
+      saveApplications(updatedApplications);
+
+      return updatedApplications;
+    });
+  }
+
+  function addApplication(
+    application: JobApplication
+  ) {
+    setApplications((currentApplications) => {
+      const updatedApplications = [
+        ...currentApplications,
+        application,
+      ];
+
+      saveApplications(updatedApplications);
+
+      return updatedApplications;
+    });
+  }
 
   return (
     <div>
@@ -53,6 +65,13 @@ function updateStatus(
       <p className="mt-2 text-gray-600">
         Track your job application progress.
       </p>
+
+      <div className="mt-6">
+        <ApplicationForm
+          jobs={mockJobs}
+          onAddApplication={addApplication}
+        />
+      </div>
 
       <div className="mt-6 space-y-4">
         {applications.map((application) => {

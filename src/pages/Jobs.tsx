@@ -1,16 +1,17 @@
 import { useState } from "react";
-import { mockJobs } from "../data/mockData";
 import JobForm from "../components/JobForm";
+import { mockJobs } from "../data/mockData";
+import {
+  getJobs,
+  saveJobs,
+} from "../services/storageService";
 import type { Job } from "../types/index";
 
 function Jobs() {
-  const [jobs, setJobs] = useState<Job[]>(() => {
-    const savedJobs = localStorage.getItem("jobs");
-
-    return savedJobs
-      ? JSON.parse(savedJobs)
-      : mockJobs;
-  });
+  const [jobs, setJobs] =
+    useState<Job[]>(() =>
+      getJobs(mockJobs)
+    );
 
   function addJob(job: Job) {
     setJobs((currentJobs) => {
@@ -18,12 +19,9 @@ function Jobs() {
         ...currentJobs,
         job,
       ];
-    
-      localStorage.setItem(
-        "jobs",
-        JSON.stringify(updatedJobs)
-      );
-    
+
+      saveJobs(updatedJobs);
+
       return updatedJobs;
     });
   }
@@ -66,14 +64,16 @@ function Jobs() {
               </h4>
 
               <div className="flex flex-wrap gap-2 mt-2">
-                {job.requiredSkills.map((skill) => (
-                  <span
-                    key={skill}
-                    className="bg-green-100 text-green-700 px-3 py-1 rounded"
-                  >
-                    {skill}
-                  </span>
-                ))}
+                {job.requiredSkills.map(
+                  (skill) => (
+                    <span
+                      key={skill}
+                      className="bg-green-100 text-green-700 px-3 py-1 rounded"
+                    >
+                      {skill}
+                    </span>
+                  )
+                )}
               </div>
             </div>
           </div>

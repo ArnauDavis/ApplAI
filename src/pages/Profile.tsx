@@ -1,18 +1,21 @@
 import { useState } from "react";
-import { mockProfile } from "../data/mockData";
 import ProfileForm from "../components/ProfileForm";
+import { mockProfile } from "../data/mockData";
+import { getProfile, saveProfile, } from "../services/storageService";
 import type { UserProfile } from "../types/index";
 
 function Profile() {
   const [profile, setProfile] =
-    useState<UserProfile>(() => {
-      const savedProfile =
-        localStorage.getItem("profile");
+    useState<UserProfile>(() =>
+      getProfile(mockProfile)
+    );
 
-      return savedProfile
-        ? JSON.parse(savedProfile)
-        : mockProfile;
-    });
+  function updateProfile(
+    updatedProfile: UserProfile
+  ) {
+    setProfile(updatedProfile);
+    saveProfile(updatedProfile);
+  }
 
   return (
     <div>
@@ -23,14 +26,7 @@ function Profile() {
       <div className="mt-6">
         <ProfileForm
           profile={profile}
-          onSave={(updatedProfile) => {
-            setProfile(updatedProfile);
-          
-            localStorage.setItem(
-              "profile",
-              JSON.stringify(updatedProfile)
-            );
-          }}
+          onSave={updateProfile}
         />
       </div>
 
