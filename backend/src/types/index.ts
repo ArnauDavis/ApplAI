@@ -3,6 +3,7 @@ export interface UserProfile {
   name: string;
   summary: string;
   skills: string[];
+
   experience: Experience[];
   education: Education[];
   projects: Project[];
@@ -14,7 +15,7 @@ export interface Experience {
   title: string;
   description: string;
   startDate: string;
-  endDate: string | null;
+  endDate?: string;
 }
 
 export interface Education {

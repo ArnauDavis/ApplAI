@@ -6,6 +6,7 @@ function mapProfile(profile: {
   name: string;
   summary: string;
   skills: string[];
+
   experiences: {
     id: string;
     company: string;
@@ -13,6 +14,20 @@ function mapProfile(profile: {
     description: string;
     startDate: Date;
     endDate: Date | null;
+  }[];
+
+  education: {
+    id: string;
+    school: string;
+    degree: string;
+    field: string;
+  }[];
+
+  projects: {
+    id: string;
+    name: string;
+    description: string;
+    technologies: string[];
   }[];
 }): UserProfile {
   return {
@@ -30,8 +45,19 @@ function mapProfile(profile: {
       endDate: experience.endDate?.toISOString(),
     })),
 
-    education: [],
-    projects: [],
+    education: profile.education.map((education) => ({
+      id: education.id,
+      school: education.school,
+      degree: education.degree,
+      field: education.field,
+    })),
+
+    projects: profile.projects.map((project) => ({
+      id: project.id,
+      name: project.name,
+      description: project.description,
+      technologies: project.technologies,
+    })),
   };
 }
 
@@ -39,6 +65,8 @@ export async function getProfiles(): Promise<UserProfile[]> {
   const profiles = await prisma.userProfile.findMany({
     include: {
       experiences: true,
+      education: true,
+      projects: true,
     },
   });
 
@@ -54,6 +82,8 @@ export async function getProfileById(
     },
     include: {
       experiences: true,
+      education: true,
+      projects: true,
     },
   });
 
@@ -75,6 +105,8 @@ export async function createProfile(
     },
     include: {
       experiences: true,
+      education: true,
+      projects: true,
     },
   });
 
@@ -104,6 +136,8 @@ export async function updateProfile(
     },
     include: {
       experiences: true,
+      education: true,
+      projects: true,
     },
   });
 
@@ -114,119 +148,6 @@ export async function deleteProfile(
   id: string
 ): Promise<boolean> {
   await prisma.userProfile.delete({
-    where: {
-      id,
-    },
-  });
-
-  return true;
-}
-
-export async function createExperience(
-  profileId: string,
-  experienceData: {
-    company: string;
-    title: string;
-    description: string;
-    startDate: string;
-    endDate?: string;
-  }
-) {
-  const experience = await prisma.experience.create({
-    data: {
-      company: experienceData.company,
-      title: experienceData.title,
-      description: experienceData.description,
-      startDate: new Date(experienceData.startDate),
-      endDate: experienceData.endDate
-        ? new Date(experienceData.endDate)
-        : null,
-      userProfileId: profileId,
-    },
-  });
-
-  return {
-    id: experience.id,
-    company: experience.company,
-    title: experience.title,
-    description: experience.description,
-    startDate: experience.startDate.toISOString(),
-    endDate: experience.endDate?.toISOString() ?? null,
-  };
-}
-
-export async function getExperiences(
-  profileId: string
-) {
-  const experiences = await prisma.experience.findMany({
-    where: {
-      userProfileId: profileId,
-    },
-  });
-
-  return experiences.map((experience) => ({
-    id: experience.id,
-    company: experience.company,
-    title: experience.title,
-    description: experience.description,
-    startDate: experience.startDate.toISOString(),
-    endDate: experience.endDate?.toISOString() ?? null,
-  }));
-}
-
-export async function updateExperience(
-  id: string,
-  experienceData: {
-    company?: string;
-    title?: string;
-    description?: string;
-    startDate?: string;
-    endDate?: string | null;
-  }
-) {
-  const experience = await prisma.experience.update({
-    where: {
-      id,
-    },
-    data: {
-      ...(experienceData.company !== undefined && {
-        company: experienceData.company,
-      }),
-
-      ...(experienceData.title !== undefined && {
-        title: experienceData.title,
-      }),
-
-      ...(experienceData.description !== undefined && {
-        description: experienceData.description,
-      }),
-
-      ...(experienceData.startDate !== undefined && {
-        startDate: new Date(experienceData.startDate),
-      }),
-
-      ...(experienceData.endDate !== undefined && {
-        endDate: experienceData.endDate
-          ? new Date(experienceData.endDate)
-          : null,
-      }),
-    },
-  });
-
-  return {
-    id: experience.id,
-    company: experience.company,
-    title: experience.title,
-    description: experience.description,
-    startDate: experience.startDate.toISOString(),
-    endDate: experience.endDate?.toISOString() ?? null,
-  };
-}
-
-export async function deleteExperience(
-  id: string
-): Promise<boolean> {
-  await prisma.experience.delete({
     where: {
       id,
     },
