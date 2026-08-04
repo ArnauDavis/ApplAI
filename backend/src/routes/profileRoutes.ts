@@ -29,6 +29,21 @@ import {
   deleteProject,
 } from "../services/projectService.ts";
 
+import {
+  createJob,
+  getJobs,
+  updateJob,
+  deleteJob,
+} from "../services/jobService.ts";
+
+
+import {
+  createApplication,
+  getApplications,
+  updateApplication,
+  deleteApplication,
+} from "../services/applicationService.ts";
+
 const router = Router();
 
 
@@ -190,6 +205,80 @@ router.put("/projects/:id", async (req, res) => {
 
 router.delete("/projects/:id", async (req, res) => {
   await deleteProject(req.params.id);
+
+  res.status(204).send();
+});
+
+
+// --------------------
+// Job Routes
+// --------------------
+
+router.post("/:profileId/jobs", async (req, res) => {
+  const job = await createJob(
+    req.params.profileId,
+    req.body
+  );
+
+  res.status(201).json(job);
+});
+
+router.get("/:profileId/jobs", async (req, res) => {
+  const jobs = await getJobs(
+    req.params.profileId
+  );
+
+  res.json(jobs);
+});
+
+router.put("/jobs/:id", async (req, res) => {
+  const job = await updateJob(
+    req.params.id,
+    req.body
+  );
+
+  res.json(job);
+});
+
+router.delete("/jobs/:id", async (req, res) => {
+  await deleteJob(req.params.id);
+
+  res.status(204).send();
+});
+
+
+// --------------------
+// Application Routes
+// --------------------
+
+router.post("/:profileId/applications", async (req, res) => {
+  const application = await createApplication(
+    req.params.profileId,
+    req.body
+  );
+
+  res.status(201).json(application);
+});
+
+router.get("/:profileId/applications", async (req, res) => {
+  const applications = await getApplications(
+    req.params.profileId
+  );
+
+  res.json(applications);
+});
+
+router.put("/applications/:id", async (req, res) => {
+  const application = await updateApplication(
+    req.params.id,
+    req.body
+  );
+
+  res.json(application);
+});
+
+router.delete("/applications/:id", async (req, res) => {
+  await deleteApplication(req.params.id);
 
   res.status(204).send();
 });

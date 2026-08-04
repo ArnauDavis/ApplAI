@@ -29,6 +29,25 @@ function mapProfile(profile: {
     description: string;
     technologies: string[];
   }[];
+  jobs: {
+    id: string;
+    title: string;
+    company: string;
+    description: string;
+    url: string | null;
+  }[];
+  applications: {
+    id: string;
+    status: string;
+    notes: string | null;
+    job: {
+      id: string;
+      title: string;
+      company: string;
+      description: string;
+      url: string | null;
+    };
+  }[];
 }): UserProfile {
   return {
     id: profile.id,
@@ -42,7 +61,7 @@ function mapProfile(profile: {
       title: experience.title,
       description: experience.description,
       startDate: experience.startDate.toISOString(),
-      endDate: experience.endDate?.toISOString(),
+      endDate: experience.endDate?.toISOString() ?? null,
     })),
 
     education: profile.education.map((education) => ({
@@ -58,6 +77,27 @@ function mapProfile(profile: {
       description: project.description,
       technologies: project.technologies,
     })),
+
+    jobs: profile.jobs.map((job) => ({
+      id: job.id,
+      title: job.title,
+      company: job.company,
+      description: job.description,
+      url: job.url,
+    })),
+
+    applications: profile.applications.map((application) => ({
+      id: application.id,
+      status: application.status,
+      notes: application.notes,
+      job: {
+        id: application.job.id,
+        title: application.job.title,
+        company: application.job.company,
+        description: application.job.description,
+        url: application.job.url,
+      },
+    })),
   };
 }
 
@@ -67,6 +107,12 @@ export async function getProfiles(): Promise<UserProfile[]> {
       experiences: true,
       education: true,
       projects: true,
+      jobs: true,
+      applications: {
+        include: {
+          job: true,
+        },
+      },
     },
   });
 
@@ -84,6 +130,12 @@ export async function getProfileById(
       experiences: true,
       education: true,
       projects: true,
+      jobs: true,
+      applications: {
+        include: {
+          job: true,
+        },
+      },
     },
   });
 
@@ -107,6 +159,12 @@ export async function createProfile(
       experiences: true,
       education: true,
       projects: true,
+      jobs: true,
+      applications: {
+        include: {
+          job: true,
+        },
+      },
     },
   });
 
@@ -138,6 +196,12 @@ export async function updateProfile(
       experiences: true,
       education: true,
       projects: true,
+      jobs: true,
+      applications: {
+        include: {
+          job: true,
+        },
+      },
     },
   });
 
