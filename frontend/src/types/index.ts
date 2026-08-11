@@ -1,5 +1,3 @@
-
-
 export interface UserProfile {
   id: string;
   name: string;
@@ -8,6 +6,8 @@ export interface UserProfile {
   experience: Experience[];
   education: Education[];
   projects: Project[];
+  jobs: Job[];
+  applications: JobApplication[];
 }
 
 export interface Experience {
@@ -16,7 +16,7 @@ export interface Experience {
   role: string;
   description: string;
   startDate: string;
-  endDate?: string;
+  endDate?: string | null;
 }
 
 export interface Education {
@@ -38,8 +38,8 @@ export interface Job {
   title: string;
   company: string;
   description: string;
-  url?: string;
-  requiredSkills: string[];
+  url?: string | null;
+  requiredSkills?: string[];
 }
 
 export type ApplicationStatus =
@@ -53,8 +53,9 @@ export type ApplicationStatus =
 
 export interface JobApplication {
   id: string;
-  jobId: string;
+  jobId?: string;
   status: ApplicationStatus;
-  notes?: string;
+  notes?: string | null;
   appliedDate?: string;
+  job?: Job;
 }
