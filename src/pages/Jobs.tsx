@@ -1,29 +1,103 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import JobForm from "../components/JobForm";
-import { mockJobs } from "../data/mockData";
 import {
-  getJobs,
-  saveJobs,
+  getProfilesFromApi,
+  getJobsFromApi,
+  createJobToApi,
 } from "../services/storageService";
 import type { Job } from "../types/index";
 
 function Jobs() {
-  const [jobs, setJobs] =
-    useState<Job[]>(() =>
-      getJobs(mockJobs)
-    );
+  const [jobs, setJobs] = useState<Job[]>([]);
+  const [profileId, setProfileId] = useState<string | null>(null);
 
-  function addJob(job: Job) {
-    setJobs((currentJobs) => {
-      const updatedJobs = [
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    async function loadJobs() {
+      try {
+        const profiles = await getProfilesFromApi();
+
+        if (profiles.length === 0) {
+          setError("No profile was found.");
+          return;
+        }
+
+        const profile = profiles[0];
+
+        setProfileId(profile.id);
+
+        const profileJobs = await getJobsFromApi(
+          profile.id
+        );
+
+        setJobs(profileJobs);
+        setError(null);
+      } catch (error) {
+        console.error(
+          "Failed to load jobs:",
+          error
+        );
+
+        setError(
+          "Unable to load jobs from the backend."
+        );
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    loadJobs();
+  }, []);
+
+  async function addJob(job: Job) {
+    if (!profileId) {
+      setError("No profile is available.");
+      return;
+    }
+
+    try {
+      const createdJob = await createJobToApi(
+        profileId,
+        {
+          title: job.title,
+          company: job.company,
+          description: job.description,
+          url: job.url,
+        }
+      );
+
+      setJobs((currentJobs) => [
         ...currentJobs,
-        job,
-      ];
+        createdJob,
+      ]);
 
-      saveJobs(updatedJobs);
+      setError(null);
+    } catch (error) {
+      console.error(
+        "Failed to create job:",
+        error
+      );
 
-      return updatedJobs;
-    });
+      setError(
+        "Unable to save job to the backend."
+      );
+    }
+  }
+
+  if (loading) {
+    return (
+      <div>
+        <h2 className="text-2xl font-semibold">
+          Jobs
+        </h2>
+
+        <p className="mt-6 text-gray-600">
+          Loading jobs...
+        </p>
+      </div>
+    );
   }
 
   return (
@@ -35,6 +109,12 @@ function Jobs() {
       <p className="mt-2 text-gray-600">
         Manage and analyze job opportunities.
       </p>
+
+      {error && (
+        <div className="mt-4 bg-red-100 text-red-700 p-4 rounded">
+          {error}
+        </div>
+      )}
 
       <div className="mt-6">
         <JobForm onAddJob={addJob} />
@@ -58,24 +138,16 @@ function Jobs() {
               {job.description}
             </p>
 
-            <div className="mt-4">
-              <h4 className="font-semibold">
-                Required Skills
-              </h4>
-
-              <div className="flex flex-wrap gap-2 mt-2">
-                {job.requiredSkills.map(
-                  (skill) => (
-                    <span
-                      key={skill}
-                      className="bg-green-100 text-green-700 px-3 py-1 rounded"
-                    >
-                      {skill}
-                    </span>
-                  )
-                )}
-              </div>
-            </div>
+            {job.url && (
+              <a
+                href={job.url}
+                target="_blank"
+                rel="noreferrer"
+                className="mt-3 inline-block text-blue-600 hover:underline"
+              >
+                View Job
+              </a>
+            )}
           </div>
         ))}
       </div>
@@ -84,3 +156,4 @@ function Jobs() {
 }
 
 export default Jobs;
+

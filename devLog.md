@@ -2,7 +2,7 @@
 
 ## Project Status
 
-**Current Phase:** Frontend foundation complete → Beginning application interaction
+**Current Phase:** Backend MVP complete → Connecting frontend application to API
 
 **Project Type:** Learning project + potential real product
 
@@ -259,7 +259,7 @@ Track:
 
 Statuses:
 
-```
+```text
 Saved
 Reviewing
 Preparing
@@ -292,7 +292,6 @@ Goals:
 
 ## Backend
 
-
 Chosen direction:
 
 * Node.js + TypeScript.
@@ -308,20 +307,22 @@ Goals:
 
 Architecture:
 
-
+```text
 React App
-|
-v
+    |
+    v
 Node.js + Express API
-|
-v
+    |
+    v
 Prisma ORM
-|
-v
+    |
+    v
 PostgreSQL Database
+```
 
+The core backend MVP is complete.
 
-Implementation will begin after frontend interaction features are complete.
+The frontend currently uses a temporary localStorage service and is now being prepared to connect to the backend API.
 
 ---
 
@@ -331,7 +332,7 @@ The AI layer should be separated from the frontend.
 
 Future architecture:
 
-```
+```text
 React App
     |
 Backend API
@@ -392,6 +393,7 @@ Tasks:
 Status: COMPLETE
 
 Completed:
+
 ✅ Created Vite React project
 ✅ Configured TypeScript
 ✅ Installed dependencies
@@ -412,45 +414,48 @@ Status: COMPLETE
 
 Completed:
 
-✅ Removed default Vite starter UI  
-✅ Verified Tailwind CSS configuration  
-✅ Created initial application shell  
-✅ Created reusable Header component  
-✅ Created reusable Navigation component  
+✅ Removed default Vite starter UI
+✅ Verified Tailwind CSS configuration
+✅ Created initial application shell
+✅ Created reusable Header component
+✅ Created reusable Navigation component
 ✅ Created initial page components:
-   - Dashboard
-   - Profile
-   - Jobs
-   - Applications
+
+* Dashboard
+* Profile
+* Jobs
+* Applications
+
 ✅ Installed React Router
 ✅ Added BrowserRouter configuration
 ✅ Added application routes
 ✅ Connected navigation links to pages
 
-
 Implementation decisions:
 
-- Avoided creating folders before files were needed.
-- Built the application incrementally.
-- Kept App.tsx responsible for overall application layout and routing.
-- Created reusable UI components only when there was a clear need.
-- Created page components for complete application screens.
-- Added routing only after multiple pages existed.
-- Used React Router for client-side navigation.
+* Avoided creating folders before files were needed.
+* Built the application incrementally.
+* Kept App.tsx responsible for overall application layout and routing.
+* Created reusable UI components only when there was a clear need.
+* Created page components for complete application screens.
+* Added routing only after multiple pages existed.
+* Used React Router for client-side navigation.
 
 Current application behavior:
 
-- Application has a shared header.
-- Application has a navigation sidebar.
-- Users can navigate between pages without refreshing.
-- Routes currently available:
+* Application has a shared header.
+* Application has a navigation sidebar.
+* Users can navigate between pages without refreshing.
+* Routes currently available:
 
-    / Dashboard
-    /profile Profile
-    /jobs Jobs
-    /applications Applications
+```text
+/              Dashboard
+/profile       Profile
+/jobs          Jobs
+/applications  Applications
+```
 
-
+---
 
 ## Milestone 3 — Data Modeling
 
@@ -458,49 +463,50 @@ Status: COMPLETE
 
 Completed:
 
-✅ Created TypeScript data models  
-✅ Created UserProfile interface  
-✅ Created Experience interface  
-✅ Created Education interface  
-✅ Created Project interface  
-✅ Created Job interface  
-✅ Created JobApplication interface  
-✅ Created ApplicationStatus type  
-✅ Created frontend mock data  
-✅ Connected Profile page to profile data  
-✅ Connected Jobs page to job data  
-✅ Connected Applications page to application data  
-✅ Connected Dashboard page to application summaries 
-
+✅ Created TypeScript data models
+✅ Created UserProfile interface
+✅ Created Experience interface
+✅ Created Education interface
+✅ Created Project interface
+✅ Created Job interface
+✅ Created JobApplication interface
+✅ Created ApplicationStatus type
+✅ Created frontend mock data
+✅ Connected Profile page to profile data
+✅ Connected Jobs page to job data
+✅ Connected Applications page to application data
+✅ Connected Dashboard page to application summaries
 
 Data flow:
 
+```text
 types/index.ts
-|
-v
+      |
+      v
 data/mockData.ts
-|
-v
+      |
+      v
 pages/
-|
-v
+      |
+      v
 UI
-
-
+```
 
 Implementation decisions:
 
-- Created folders only when files were needed.
-- Built data models before connecting UI to avoid hardcoded page content.
-- Used TypeScript interfaces to define application data shapes.
-- Used mock data as a temporary replacement for future API/database data.
-- Used `import type` for TypeScript-only imports.
+* Created folders only when files were needed.
+* Built data models before connecting UI to avoid hardcoded page content.
+* Used TypeScript interfaces to define application data shapes.
+* Used mock data as a temporary replacement for future API/database data.
+* Used `import type` for TypeScript-only imports.
 
 Example:
+
+```ts
 import type { UserProfile } from "../types/index";
+```
 
 ---
-
 
 ## Milestone 4 — Application Interaction
 
@@ -512,98 +518,472 @@ Move from displaying static data to allowing users to create and modify data.
 
 Completed:
 
-✅ Created ProfileForm component  
-✅ Added profile editing functionality  
-✅ Added React state management for profile data  
-✅ Created JobForm component  
-✅ Added job creation functionality  
-✅ Created ApplicationStatusSelect component  
-✅ Added application status updates  
-✅ Created ApplicationForm component  
-✅ Added application creation workflow  
-✅ Added localStorage persistence for profile data  
-✅ Added localStorage persistence for job data  
-✅ Added localStorage persistence for application data  
-✅ Created frontend data service layer  
-✅ Removed direct localStorage usage from page components  
+✅ Created ProfileForm component
+✅ Added profile editing functionality
+✅ Added React state management for profile data
+✅ Created JobForm component
+✅ Added job creation functionality
+✅ Created ApplicationStatusSelect component
+✅ Added application status updates
+✅ Created ApplicationForm component
+✅ Added application creation workflow
+✅ Added localStorage persistence for profile data
+✅ Added localStorage persistence for job data
+✅ Added localStorage persistence for application data
+✅ Created frontend data service layer
+✅ Removed direct localStorage usage from page components
 
 Current application behavior:
 
-- Users can create and update profile information.
-- Users can create job opportunities.
-- Users can create applications from available jobs.
-- Users can update application statuses.
-- User data persists after browser refresh.
+* Users can create and update profile information.
+* Users can create job opportunities.
+* Users can create applications from available jobs.
+* Users can update application statuses.
+* User data persists after browser refresh.
 
 Current frontend data flow:
 
+```text
 Components
-|
-v
+    |
+    v
 Pages
-|
-v
+    |
+    v
 Services
-|
-v
+    |
+    v
 localStorage
-
+```
 
 Implementation decisions:
 
-- Components are responsible for UI only.
-- Pages manage application state.
-- Services manage data persistence.
-- Data storage is abstracted behind a service layer.
-- localStorage is being used as temporary persistence before backend implementation.
+* Components are responsible for UI only.
+* Pages manage application state.
+* Services manage data persistence.
+* Data storage is abstracted behind a service layer.
+* localStorage is being used as temporary persistence before backend implementation.
 
 Future replacement:
 
-
+```text
 Components
-|
-v
+    |
+    v
 Pages
-|
-v
+    |
+    v
 Services
-|
-v
+    |
+    v
 API
-|
-v
+    |
+    v
 Prisma
-|
-v
+    |
+    v
 PostgreSQL
+```
+
+---
 
 ## Milestone 5 — Backend
 
-Status: PLANNED
+Status: COMPLETE
 
 Technology decisions:
 
-✅ Node.js + TypeScript  
-✅ Express API framework  
-✅ PostgreSQL database  
-✅ Prisma ORM  
+Chosen:
+
+* Node.js
+* TypeScript
+* Express
+* Prisma ORM
+* PostgreSQL
 
 Goals:
 
 Create a backend API that replaces frontend mock data and localStorage persistence.
 
-Planned tasks:
+Completed:
 
-* Create backend project.
-* Configure Express server.
-* Connect PostgreSQL database.
-* Add Prisma database models.
-* Create API routes.
-* Connect React frontend to backend.
+### Backend foundation
+
+✅ Created backend application
+✅ Configured Node.js + TypeScript
+✅ Created Express server
+✅ Created API route structure
+✅ Created profile routes
+✅ Created backend TypeScript models
+✅ Created service layer architecture
+✅ Installed Prisma ORM
+✅ Configured PostgreSQL database
+✅ Created Prisma schema
+✅ Created initial Prisma migration
+✅ Connected backend to Prisma Client
+
+### Profile and career data
+
+✅ Created UserProfile database model
+✅ Created Experience database model
+✅ Created Education database model
+✅ Created Project database model
+✅ Created UserProfile → Experience relationship
+✅ Created UserProfile → Education relationship
+✅ Created UserProfile → Project relationship
+✅ Created Experience service layer
+✅ Created Education service layer
+✅ Created Project service layer
+✅ Added CRUD API routes for Experience
+✅ Added CRUD API routes for Education
+✅ Added CRUD API routes for Projects
+
+### Job workflow
+
+✅ Created Job database model
+✅ Created Job service layer
+✅ Added Job API routes
+✅ Tested Job CRUD workflow using curl
+
+### Application workflow
+
+✅ Created Application database model
+✅ Created Application service layer
+✅ Added Application API routes
+✅ Connected Applications to Jobs
+✅ Connected Applications to UserProfiles
+
+### Profile aggregation
+
+✅ Updated UserProfile aggregation to include:
+
+* Experience
+* Education
+* Projects
+* Jobs
+* Applications
+
+### Backend verification
+
+✅ Tested Experience CRUD workflow using curl
+✅ Tested Job CRUD workflow using curl
+✅ Verified the complete profile workflow through the API
+✅ Verified Prisma relationships and database persistence
+
+Current backend structure:
+
+```text
+backend/
+
+├── prisma/
+│   ├── schema.prisma
+│   └── migrations/
+│
+└── src/
+    ├── routes/
+    │   ├── index.ts
+    │   └── profileRoutes.ts
+    │
+    ├── services/
+    │   ├── profileService.ts
+    │   ├── experienceService.ts
+    │   ├── educationService.ts
+    │   ├── projectService.ts
+    │   ├── jobService.ts
+    │   └── applicationService.ts
+    │
+    ├── lib/
+    │   └── prisma.ts
+    │
+    ├── types/
+    │   └── index.ts
+    │
+    └── server.ts
+```
+
+Implementation decisions:
+
+* Started with temporary in-memory storage before adding a database.
+* Added a service layer before introducing database logic.
+* Replaced temporary storage with Prisma queries.
+* Kept database access separated from API routes.
+* Continued using a service layer to isolate Prisma/database logic from Express routes.
+* Added relational data gradually instead of creating all models at once.
+* Verified each backend feature manually through API testing before moving forward.
+* Kept Experience logic inside profile services temporarily to reduce premature file separation.
+* Avoided adding unnecessary backend abstractions before they were needed.
+
+Current API:
+
+### Profile endpoints
+
+```text
+GET    /profiles
+POST   /profiles
+GET    /profiles/:id
+PUT    /profiles/:id
+DELETE /profiles/:id
+```
+
+### Experience endpoints
+
+```text
+POST   /profiles/:profileId/experiences
+GET    /profiles/:profileId/experiences
+PUT    /profiles/experiences/:id
+DELETE /profiles/experiences/:id
+```
+
+### Education endpoints
+
+```text
+POST   /profiles/:profileId/education
+GET    /profiles/:profileId/education
+PUT    /profiles/education/:id
+DELETE /profiles/education/:id
+```
+
+### Project endpoints
+
+```text
+POST   /profiles/:profileId/projects
+GET    /profiles/:profileId/projects
+PUT    /profiles/projects/:id
+DELETE /profiles/projects/:id
+```
+
+### Job endpoints
+
+```text
+POST   /profiles/:profileId/jobs
+GET    /profiles/:profileId/jobs
+PUT    /profiles/jobs/:id
+DELETE /profiles/jobs/:id
+```
+
+### Application endpoints
+
+```text
+POST   /profiles/:profileId/applications
+GET    /profiles/:profileId/applications
+PUT    /profiles/applications/:id
+DELETE /profiles/applications/:id
+```
+
+Current database model:
+
+```text
+UserProfile
+
+id
+name
+summary
+skills
+createdAt
+updatedAt
+```
+
+```text
+Experience
+
+id
+company
+title
+description
+startDate
+endDate
+userProfileId
+createdAt
+updatedAt
+```
+
+```text
+Education
+
+id
+school
+degree
+field
+userProfileId
+createdAt
+updatedAt
+```
+
+```text
+Project
+
+id
+name
+description
+technologies
+userProfileId
+createdAt
+updatedAt
+```
+
+```text
+Job
+
+id
+title
+company
+description
+url
+userProfileId
+createdAt
+updatedAt
+```
+
+```text
+Application
+
+id
+status
+notes
+jobId
+userProfileId
+createdAt
+updatedAt
+```
+
+Relationships:
+
+```text
+UserProfile
+|
+├── Experience[]
+├── Education[]
+├── Project[]
+├── Job[]
+└── Application[]
+```
+
+```text
+Job
+|
+└── Application[]
+```
+
+### Remaining backend improvements
+
+These are not blockers for connecting the frontend:
+
+* Add request validation.
+* Add centralized error handling.
+* Add API response consistency.
+* Improve API error messages.
+* Improve environment-based configuration.
+* Add additional automated backend testing.
+
+These improvements will be addressed after the core frontend → API connection is working.
 
 ---
 
-## Milestone 6 — AI Features
+## Milestone 6 — Frontend API Integration
+
+Status: IN PROGRESS / NEXT
+
+Goal:
+
+Replace the temporary frontend localStorage persistence with the backend API.
+
+Current frontend persistence:
+
+```text
+Components
+    |
+    v
+Pages
+    |
+    v
+storageService.ts
+    |
+    v
+localStorage
+```
+
+Target architecture:
+
+```text
+Components
+    |
+    v
+Pages
+    |
+    v
+Frontend API Services
+    |
+    v
+Express API
+    |
+    v
+Backend Services
+    |
+    v
+Prisma
+    |
+    v
+PostgreSQL
+```
+
+Current status:
+
+✅ Backend API is available
+✅ Backend CRUD services are available
+✅ Backend database persistence is available
+✅ Frontend service layer already exists
+⏳ Frontend services still use localStorage
+⏳ Frontend pages have not yet been connected to the backend API
+⏳ localStorage has not yet been removed
+
+Current frontend service:
+
+```text
+src/services/storageService.ts
+```
+
+Currently handles:
+
+* Profile retrieval and persistence.
+* Job retrieval and persistence.
+* Application retrieval and persistence.
+
+The service currently uses browser `localStorage`.
+
+---
+
+## Frontend API Integration Approach
+
+The frontend will be connected incrementally.
+
+To reduce mistakes and keep the learning process clear, development will proceed **one file at a time**.
+
+Process:
+
+1. Inspect the existing file.
+2. Determine the smallest necessary change.
+3. Make the change.
+4. Run and test the application.
+5. Verify the result.
+6. Move to the next file.
+
+No large batches of changes will be made unless there is a specific reason to do so.
+
+Planned progression:
+
+1. Replace or adapt the frontend storage service for API communication.
+2. Connect profile data to the backend.
+3. Test profile persistence through the API.
+4. Connect jobs to the backend.
+5. Test job persistence through the API.
+6. Connect applications to the backend.
+7. Test application persistence through the API.
+8. Update dashboard data flow.
+9. Remove obsolete localStorage persistence once the API workflow is confirmed.
+
+---
+
+## Milestone 7 — AI Features
 
 Add:
 
@@ -615,12 +995,13 @@ Status:
 
 Future.
 
+AI development will begin after the core full-stack application workflow is working reliably.
+
 ---
 
 # Current Project Structure
 
-
-```
+```text
 AI-Job-Search-Assistant/
 
 ├── DEVELOPER_LOG.md
@@ -633,7 +1014,7 @@ AI-Job-Search-Assistant/
 
 Current frontend structure:
 
-```
+```text
 src/
 ├── App.tsx
 ├── main.tsx
@@ -660,7 +1041,6 @@ src/
 │
 └── types/
     └── index.ts
-
 ```
 
 ---
@@ -677,26 +1057,38 @@ src/
 ✅ Database selected: PostgreSQL.
 ✅ ORM selected: Prisma.
 ✅ Frontend interaction architecture established.
-✅ Temporary persistence implemented with localStorage.
+✅ Temporary frontend persistence implemented with localStorage.
+✅ Backend persistence implemented with PostgreSQL and Prisma.
+✅ UserProfile, Experience, Education, Project, Job, and Application backend models implemented.
+✅ Backend service layer implemented.
+✅ Backend CRUD API implemented for the core application models.
+✅ Backend API tested during development.
+✅ Frontend-to-backend integration identified as the next major milestone.
 
 ---
 
 # Current Next Step
 
+Begin replacing the frontend's temporary localStorage persistence with backend API calls.
 
-Begin Milestone 5 — Backend.
+The backend core is complete enough to support the frontend.
 
-First backend task:
+The immediate development approach is:
 
-Create backend project structure alongside the React frontend.
+* Work on one file at a time.
+* Inspect the existing implementation before changing it.
+* Make the smallest necessary change.
+* Test after each change.
+* Avoid unnecessary refactoring.
+* Preserve working functionality while transitioning from localStorage to PostgreSQL.
 
-Backend will be developed separately from the frontend:
-AI-Job-Search-Assistant/
+The first frontend file being reviewed for this transition is:
 
-├── frontend/
-└── backend/
-The frontend will continue using the service layer while backend development begins.
-The next step will be creating the backend project without touching the React app. We will create only the backend folder and initialize Node + TypeScript.
+```text
+src/services/storageService.ts
+```
+
+No changes have been made to the frontend API integration yet.
 
 ---
 
@@ -713,3 +1105,5 @@ Priorities:
 3. Avoid unnecessary complexity.
 4. Keep users in control.
 5. Document important decisions.
+6. Work incrementally and verify changes before moving forward.
+7. Prefer understanding the existing implementation before introducing changes.

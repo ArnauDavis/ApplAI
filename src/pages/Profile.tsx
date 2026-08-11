@@ -1,27 +1,121 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ProfileForm from "../components/ProfileForm";
-import { mockProfile } from "../data/mockData";
-import { getProfile, saveProfile, } from "../services/storageService";
+import {
+  getProfilesFromApi,
+  saveProfileToApi,
+} from "../services/storageService";
 import type { UserProfile } from "../types/index";
+
 
 function Profile() {
   const [profile, setProfile] =
-    useState<UserProfile>(() =>
-      getProfile(mockProfile)
-    );
+    useState<UserProfile | null>(null);
 
-  function updateProfile(
+  const [loading, setLoading] =
+    useState(true);
+
+  const [error, setError] =
+    useState<string | null>(null);
+
+
+  useEffect(() => {
+    async function loadProfile() {
+      try {
+        const profiles =
+          await getProfilesFromApi();
+
+        if (profiles.length === 0) {
+          setError(
+            "No profile was found."
+          );
+          return;
+        }
+
+        setProfile(profiles[0]);
+      } catch (error) {
+        console.error(
+          "Failed to load profile:",
+          error
+        );
+
+        setError(
+          "Unable to load profile from the backend."
+        );
+      } finally {
+        setLoading(false);
+      }
+    }
+
+
+    loadProfile();
+  }, []);
+
+
+  async function updateProfile(
     updatedProfile: UserProfile
   ) {
-    setProfile(updatedProfile);
-    saveProfile(updatedProfile);
+    try {
+      const savedProfile =
+        await saveProfileToApi(
+          updatedProfile
+        );
+
+      setProfile(savedProfile);
+      setError(null);
+    } catch (error) {
+      console.error(
+        "Failed to save profile:",
+        error
+      );
+
+      setError(
+        "Unable to save profile."
+      );
+    }
   }
+
+
+  if (loading) {
+    return (
+      <div>
+        <h2 className="text-2xl font-semibold">
+          Profile
+        </h2>
+
+        <p className="mt-6 text-gray-600">
+          Loading profile...
+        </p>
+      </div>
+    );
+  }
+
+
+  if (!profile) {
+    return (
+      <div>
+        <h2 className="text-2xl font-semibold">
+          Profile
+        </h2>
+
+        <div className="mt-6 bg-red-100 text-red-700 p-4 rounded">
+          {error ?? "No profile available."}
+        </div>
+      </div>
+    );
+  }
+
 
   return (
     <div>
       <h2 className="text-2xl font-semibold">
         Profile
       </h2>
+
+      {error && (
+        <div className="mt-4 bg-red-100 text-red-700 p-4 rounded">
+          {error}
+        </div>
+      )}
 
       <div className="mt-6">
         <ProfileForm
@@ -63,5 +157,6 @@ function Profile() {
     </div>
   );
 }
+
 
 export default Profile;
