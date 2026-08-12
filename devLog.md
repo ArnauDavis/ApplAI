@@ -2,7 +2,7 @@
 
 ## Project Status
 
-**Current Phase:** Backend MVP complete → Connecting frontend application to API
+**Current Phase:** Core frontend-to-backend integration complete → Finishing remaining API integrations
 
 **Project Type:** Learning project + potential real product
 
@@ -881,11 +881,11 @@ These improvements will be addressed after the core frontend → API connection 
 
 ## Milestone 6 — Frontend API Integration
 
-Status: IN PROGRESS / NEXT
+Status: IN PROGRESS
 
 Goal:
 
-Replace the temporary frontend localStorage persistence with the backend API.
+Replace the temporary frontend localStorage persistence with the backend API and PostgreSQL database.
 
 Current frontend persistence:
 
@@ -926,6 +926,27 @@ Prisma
 PostgreSQL
 ```
 
+
+Completed
+
+✅ Backend API is available
+✅ Backend CRUD services are available
+✅ Backend database persistence is available
+✅ Frontend service layer exists
+✅ Profile frontend connected to backend API
+✅ Profile updates persist through the API
+✅ Jobs frontend connected to backend API
+✅ Jobs can be created through the API
+✅ Jobs can be updated through the API
+✅ Jobs can be deleted through the API
+✅ Applications frontend connected to backend API
+✅ Applications can be created through the API
+✅ Application statuses can be updated through the API
+✅ Applications can be deleted through the API
+✅ Frontend error handling added for API operations
+✅ Loading states added to API-driven pages
+✅ Button feedback added for important actions such as saving, updating, and deleting
+
 Current status:
 
 ✅ Backend API is available
@@ -936,50 +957,129 @@ Current status:
 ⏳ Frontend pages have not yet been connected to the backend API
 ⏳ localStorage has not yet been removed
 
-Current frontend service:
-
-```text
+Current Frontend API Service
 src/services/storageService.ts
-```
 
-Currently handles:
+The service now provides API functions for:
 
-* Profile retrieval and persistence.
-* Job retrieval and persistence.
-* Application retrieval and persistence.
+Profiles
+Jobs
+Applications
 
-The service currently uses browser `localStorage`.
+Examples:
 
----
+getProfilesFromApi()
+getProfileFromApi()
+saveProfileToApi()
 
-## Frontend API Integration Approach
+getJobsFromApi()
+createJobToApi()
+updateJobToApi()
+deleteJobFromApi()
 
-The frontend will be connected incrementally.
+getApplicationsFromApi()
+createApplicationToApi()
+updateApplicationToApi()
+deleteApplicationFromApi()
 
-To reduce mistakes and keep the learning process clear, development will proceed **one file at a time**.
+The frontend pages now communicate with the Express backend instead of relying on localStorage for the main application workflow.
+
+Current Frontend Data Flow
+Profile / Jobs / Applications Pages
+                |
+                v
+       storageService.ts
+                |
+                v
+          Express API
+                |
+                v
+       Backend Services
+                |
+                v
+             Prisma
+                |
+                v
+          PostgreSQL
+Jobs Workflow
+
+Users can currently:
+
+View jobs stored in PostgreSQL.
+Add a job.
+Edit a job.
+Delete a job.
+Open a job URL when provided.
+
+The Jobs page provides visual feedback while saving changes.
+
+Applications Workflow
+
+Users can currently:
+
+View applications stored in PostgreSQL.
+Add an application to an existing job.
+Change application status.
+Delete an application.
+View application notes and job information.
+
+Application status changes are persisted through the backend API.
+
+Profile Workflow
+
+Users can currently:
+
+Load their profile from PostgreSQL.
+Edit their name.
+Edit their professional summary.
+Save profile changes through the backend API.
+Important Cleanup
+
+The old localStorage helper functions still exist in:
+
+src/services/storageService.ts
+
+They are no longer required for the main API workflow.
+
+They can remain temporarily while development continues, but should eventually be removed once all frontend pages have been confirmed to use the API exclusively.
+
+Remaining Milestone 6 Work
+
+⏳ Connect remaining profile-related data such as:
+
+Experience
+Education
+Projects
+
+⏳ Review Dashboard data flow.
+
+⏳ Remove obsolete localStorage functions after API integration is fully verified.
+
+⏳ Add any remaining frontend loading and error states.
+
+Development Approach
+
+Frontend API integration is being completed incrementally.
 
 Process:
 
-1. Inspect the existing file.
-2. Determine the smallest necessary change.
-3. Make the change.
-4. Run and test the application.
-5. Verify the result.
-6. Move to the next file.
+Inspect the existing file.
+Make the smallest necessary change.
+Test the feature.
+Confirm persistence in the backend.
+Move to the next feature.
 
-No large batches of changes will be made unless there is a specific reason to do so.
+This approach is being used to avoid unnecessary refactoring and preserve working functionality.
 
-Planned progression:
+Current Status
 
-1. Replace or adapt the frontend storage service for API communication.
-2. Connect profile data to the backend.
-3. Test profile persistence through the API.
-4. Connect jobs to the backend.
-5. Test job persistence through the API.
-6. Connect applications to the backend.
-7. Test application persistence through the API.
-8. Update dashboard data flow.
-9. Remove obsolete localStorage persistence once the API workflow is confirmed.
+The core frontend-to-backend workflow is now working.
+
+The application currently has functional API-backed:
+
+Profile
+Jobs
+Applications
 
 ---
 

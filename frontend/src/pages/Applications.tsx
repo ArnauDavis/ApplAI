@@ -3,25 +3,30 @@ import ApplicationForm from "../components/ApplicationForm";
 import ApplicationStatusSelect from "../components/ApplicationStatusSelect";
 import {
   getProfilesFromApi,
+  getJobsFromApi,
   getApplicationsFromApi,
+  createApplicationToApi,
+  updateApplicationToApi,
+  deleteApplicationFromApi,
 } from "../services/storageService";
+import type {
+  Job,
+  JobApplication,
+} from "../types/index";
 
 interface Application {
   id: string;
   status: string;
   notes: string | null;
-  job: {
-    id: string;
-    title: string;
-    company: string;
-    description: string;
-    url?: string | null;
-  };
+  job: Job;
 }
 
 function Applications() {
   const [applications, setApplications] =
     useState<Application[]>([]);
+
+  const [jobs, setJobs] =
+    useState<Job[]>([]);
 
   const [profileId, setProfileId] =
     useState<string | null>(null);
@@ -30,6 +35,9 @@ function Applications() {
     useState(true);
 
   const [error, setError] =
+    useState<string | null>(null);
+
+  const [deletingId, setDeletingId] =
     useState<string | null>(null);
 
   useEffect(() => {
@@ -47,11 +55,15 @@ function Applications() {
 
         setProfileId(profile.id);
 
-        const profileApplications =
-          await getApplicationsFromApi(
-            profile.id
-          );
+        const [
+          profileJobs,
+          profileApplications,
+        ] = await Promise.all([
+          getJobsFromApi(profile.id),
+          getApplicationsFromApi(profile.id),
+        ]);
 
+        setJobs(profileJobs);
         setApplications(profileApplications);
         setError(null);
       } catch (error) {
@@ -71,21 +83,130 @@ function Applications() {
     loadApplications();
   }, []);
 
-  function updateStatus(
-    id: string,
-    status: Application["status"]
+  async function addApplication(
+    application: JobApplication
   ) {
-    setApplications((currentApplications) =>
-      currentApplications.map(
-        (application) =>
-          application.id === id
-            ? {
-                ...application,
-                status,
-              }
-            : application
-      )
-    );
+    if (!profileId) {
+      setError("No profile is available.");
+      return;
+    }
+
+    try {
+      const createdApplication =
+        await createApplicationToApi(
+          profileId,
+          {
+            jobId: application.jobId,
+            status: application.status,
+            notes: application.notes,
+          }
+        );
+
+      const job = jobs.find(
+        (job) =>
+          job.id === createdApplication.jobId
+      );
+
+      if (!job) {
+        throw new Error(
+          "Job not found for application"
+        );
+      }
+
+      setApplications(
+        (currentApplications) => [
+          ...currentApplications,
+          {
+            ...createdApplication,
+            notes:
+              createdApplication.notes ?? null,
+            job,
+          },
+        ]
+      );
+
+      setError(null);
+    } catch (error) {
+      console.error(
+        "Failed to create application:",
+        error
+      );
+
+      setError(
+        "Unable to save application to the backend."
+      );
+    }
+  }
+
+  async function updateStatus(
+    id: string,
+    status: JobApplication["status"]
+  ) {
+    try {
+      const updatedApplication =
+        await updateApplicationToApi(
+          id,
+          { status }
+        );
+
+      setApplications(
+        (currentApplications) =>
+          currentApplications.map(
+            (application) =>
+              application.id === id
+                ? {
+                    ...application,
+                    status:
+                      updatedApplication.status,
+                    notes:
+                      updatedApplication.notes ??
+                      null,
+                  }
+                : application
+          )
+      );
+
+      setError(null);
+    } catch (error) {
+      console.error(
+        "Failed to update application:",
+        error
+      );
+
+      setError(
+        "Unable to update application."
+      );
+    }
+  }
+
+  async function deleteApplication(
+    id: string
+  ) {
+    setDeletingId(id);
+    setError(null);
+
+    try {
+      await deleteApplicationFromApi(id);
+
+      setApplications(
+        (currentApplications) =>
+          currentApplications.filter(
+            (application) =>
+              application.id !== id
+          )
+      );
+    } catch (error) {
+      console.error(
+        "Failed to delete application:",
+        error
+      );
+
+      setError(
+        "Unable to delete application."
+      );
+    } finally {
+      setDeletingId(null);
+    }
   }
 
   if (loading) {
@@ -120,8 +241,8 @@ function Applications() {
 
       <div className="mt-6">
         <ApplicationForm
-          jobs={[]}
-          onAddApplication={() => {}}
+          jobs={jobs}
+          onAddApplication={addApplication}
         />
       </div>
 
@@ -156,7 +277,9 @@ function Applications() {
 
             <div className="mt-4">
               <ApplicationStatusSelect
-                status={application.status as any}
+                status={
+                  application.status as JobApplication["status"]
+                }
                 onChange={(status) =>
                   updateStatus(
                     application.id,
@@ -171,6 +294,23 @@ function Applications() {
                 {application.notes}
               </p>
             )}
+
+            <button
+              type="button"
+              onClick={() =>
+                deleteApplication(
+                  application.id
+                )
+              }
+              disabled={
+                deletingId === application.id
+              }
+              className="mt-4 bg-red-600 text-white px-4 py-2 rounded disabled:bg-gray-400"
+            >
+              {deletingId === application.id
+                ? "Deleting..."
+                : "Delete Application"}
+            </button>
           </div>
         ))}
       </div>
@@ -179,4 +319,3 @@ function Applications() {
 }
 
 export default Applications;
-

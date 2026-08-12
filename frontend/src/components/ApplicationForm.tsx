@@ -11,21 +11,28 @@ function ApplicationForm({
   onAddApplication,
 }: ApplicationFormProps) {
   const [jobId, setJobId] = useState("");
+  const [saving, setSaving] = useState(false);
 
-  function handleSubmit(event: React.FormEvent) {
+  async function handleSubmit(event: React.FormEvent) {
     event.preventDefault();
 
     if (!jobId) return;
 
-    const newApplication: JobApplication = {
-      id: crypto.randomUUID(),
-      jobId,
-      status: "Saved",
-    };
+    setSaving(true);
 
-    onAddApplication(newApplication);
+    try {
+      const newApplication: JobApplication = {
+        id: crypto.randomUUID(),
+        jobId,
+        status: "Saved",
+      };
 
-    setJobId("");
+      await onAddApplication(newApplication);
+
+      setJobId("");
+    } finally {
+      setSaving(false);
+    }
   }
 
   return (
@@ -44,6 +51,7 @@ function ApplicationForm({
             setJobId(event.target.value)
           }
           className="mt-2 border rounded p-2 w-full"
+          disabled={saving}
         >
           <option value="">
             Select a job
@@ -62,9 +70,10 @@ function ApplicationForm({
 
       <button
         type="submit"
-        className="bg-blue-600 text-white px-4 py-2 rounded"
+        disabled={saving || !jobId}
+        className="bg-blue-600 text-white px-4 py-2 rounded disabled:bg-gray-400"
       >
-        Add Application
+        {saving ? "Saving..." : "Add Application"}
       </button>
     </form>
   );

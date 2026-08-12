@@ -104,6 +104,49 @@ export async function createJobToApi(
   return response.json();
 }
 
+export async function updateJobToApi(
+  jobId: string,
+  job: {
+    title?: string;
+    company?: string;
+    description?: string;
+    url?: string;
+  }
+): Promise<Job> {
+  const response = await fetch(
+    `${API_URL}/profiles/jobs/${jobId}`,
+    {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(job),
+    }
+  );
+
+  if (!response.ok) {
+    throw new Error("Failed to update job");
+  }
+
+  return response.json();
+}
+
+export async function deleteJobFromApi(
+  jobId: string
+): Promise<void> {
+  const response = await fetch(
+    `${API_URL}/profiles/jobs/${jobId}`,
+    {
+      method: "DELETE",
+    }
+  );
+
+  if (!response.ok) {
+    throw new Error("Failed to delete job");
+  }
+}
+
+
 // --------------------
 // API Application Functions
 // --------------------
@@ -163,7 +206,7 @@ export async function updateApplicationToApi(
   }
 ): Promise<JobApplication> {
   const response = await fetch(
-    `${API_URL}/applications/${applicationId}`,
+    `${API_URL}/profiles/applications/${applicationId}`,
     {
       method: "PUT",
       headers: {
@@ -184,7 +227,7 @@ export async function deleteApplicationFromApi(
   applicationId: string
 ): Promise<void> {
   const response = await fetch(
-    `${API_URL}/applications/${applicationId}`,
+    `${API_URL}/profiles/applications/${applicationId}`,
     {
       method: "DELETE",
     }

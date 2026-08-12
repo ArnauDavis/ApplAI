@@ -3,7 +3,7 @@ import type { UserProfile } from "../types/index";
 
 interface ProfileFormProps {
   profile: UserProfile;
-  onSave: (profile: UserProfile) => void;
+  onSave: (profile: UserProfile) => Promise<void>;
 }
 
 function ProfileForm({
@@ -12,15 +12,26 @@ function ProfileForm({
 }: ProfileFormProps) {
   const [name, setName] = useState(profile.name);
   const [summary, setSummary] = useState(profile.summary);
+  const [saving, setSaving] = useState(false);
+  const [saved, setSaved] = useState(false);
 
-  function handleSubmit(event: React.FormEvent) {
+  async function handleSubmit(event: React.FormEvent) {
     event.preventDefault();
 
-    onSave({
-      ...profile,
-      name,
-      summary,
-    });
+    setSaving(true);
+    setSaved(false);
+
+    try {
+      await onSave({
+        ...profile,
+        name,
+        summary,
+      });
+
+      setSaved(true);
+    } finally {
+      setSaving(false);
+    }
   }
 
   return (
@@ -59,10 +70,17 @@ function ProfileForm({
 
       <button
         type="submit"
-        className="bg-blue-600 text-white px-4 py-2 rounded"
+        disabled={saving}
+        className="bg-blue-600 text-white px-4 py-2 rounded disabled:bg-gray-400"
       >
-        Save Profile
+        {saving ? "Saving..." : "Save Profile"}
       </button>
+
+      {saved && (
+        <p className="text-green-600 font-medium">
+          Profile saved successfully.
+        </p>
+      )}
     </form>
   );
 }
