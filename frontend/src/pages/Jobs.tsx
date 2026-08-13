@@ -11,24 +11,12 @@ import type { Job } from "../types/index";
 
 function Jobs() {
   const [jobs, setJobs] = useState<Job[]>([]);
+
   const [profileId, setProfileId] =
     useState<string | null>(null);
 
-  const [editingJobId, setEditingJobId] =
-    useState<string | null>(null);
-
-  const [editTitle, setEditTitle] = useState("");
-  const [editCompany, setEditCompany] =
-    useState("");
-  const [editDescription, setEditDescription] =
-    useState("");
-  const [editUrl, setEditUrl] = useState("");
-
-  const [savingJobId, setSavingJobId] =
-    useState<string | null>(null);
-
-  const [deletingJobId, setDeletingJobId] =
-    useState<string | null>(null);
+  const [editingJob, setEditingJob] =
+    useState<Job | null>(null);
 
   const [loading, setLoading] =
     useState(true);
@@ -73,7 +61,12 @@ function Jobs() {
     loadJobs();
   }, []);
 
-  async function addJob(job: Job) {
+  async function addJob(job: {
+    title: string;
+    company: string;
+    description: string;
+    url?: string;
+  }) {
     if (!profileId) {
       setError("No profile is available.");
       return;
@@ -83,12 +76,7 @@ function Jobs() {
       const createdJob =
         await createJobToApi(
           profileId,
-          {
-            title: job.title,
-            company: job.company,
-            description: job.description,
-            url: job.url,
-          }
+          job
         );
 
       setJobs((currentJobs) => [
@@ -106,51 +94,37 @@ function Jobs() {
       setError(
         "Unable to save job to the backend."
       );
+
+      throw error;
     }
   }
 
-  function startEditing(job: Job) {
-    setEditingJobId(job.id);
-    setEditTitle(job.title);
-    setEditCompany(job.company);
-    setEditDescription(job.description);
-    setEditUrl(job.url ?? "");
-    setError(null);
-  }
-
-  function cancelEditing() {
-    setEditingJobId(null);
-    setEditTitle("");
-    setEditCompany("");
-    setEditDescription("");
-    setEditUrl("");
-  }
-
-  async function saveJob(jobId: string) {
-    setSavingJobId(jobId);
-    setError(null);
-
+  async function updateJob(
+    jobId: string,
+    job: {
+      title: string;
+      company: string;
+      description: string;
+      url?: string;
+    }
+  ) {
     try {
       const updatedJob =
         await updateJobToApi(
           jobId,
-          {
-            title: editTitle,
-            company: editCompany,
-            description: editDescription,
-            url: editUrl || undefined,
-          }
+          job
         );
 
       setJobs((currentJobs) =>
-        currentJobs.map((job) =>
-          job.id === jobId
+        currentJobs.map((existingJob) =>
+          existingJob.id === jobId
             ? updatedJob
-            : job
+            : existingJob
         )
       );
 
-      cancelEditing();
+      setEditingJob(null);
+      setError(null);
     } catch (error) {
       console.error(
         "Failed to update job:",
@@ -160,15 +134,14 @@ function Jobs() {
       setError(
         "Unable to update job."
       );
-    } finally {
-      setSavingJobId(null);
+
+      throw error;
     }
   }
 
-  async function deleteJob(jobId: string) {
-    setDeletingJobId(jobId);
-    setError(null);
-
+  async function deleteJob(
+    jobId: string
+  ) {
     try {
       await deleteJobFromApi(jobId);
 
@@ -177,6 +150,12 @@ function Jobs() {
           (job) => job.id !== jobId
         )
       );
+
+      if (editingJob?.id === jobId) {
+        setEditingJob(null);
+      }
+
+      setError(null);
     } catch (error) {
       console.error(
         "Failed to delete job:",
@@ -186,8 +165,8 @@ function Jobs() {
       setError(
         "Unable to delete job."
       );
-    } finally {
-      setDeletingJobId(null);
+
+      throw error;
     }
   }
 
@@ -222,118 +201,41 @@ function Jobs() {
       )}
 
       <div className="mt-6">
-        <JobForm onAddJob={addJob} />
+        {editingJob ? (
+          <JobForm
+            job={editingJob}
+            onSave={(job) =>
+              updateJob(
+                editingJob.id,
+                job
+              )
+            }
+            onCancel={() =>
+              setEditingJob(null)
+            }
+          />
+        ) : (
+          <JobForm
+            onSave={addJob}
+          />
+        )}
       </div>
 
       <div className="mt-6 space-y-4">
-        {jobs.map((job) => {
-          const isEditing =
-            editingJobId === job.id;
-
-          const isSaving =
-            savingJobId === job.id;
-
-          const isDeleting =
-            deletingJobId === job.id;
-
-          return (
+        {jobs.length === 0 ? (
+          <div className="bg-white p-6 rounded-lg shadow">
+            <p className="text-gray-600">
+              No jobs added yet.
+            </p>
+          </div>
+        ) : (
+          jobs.map((job) => (
             <div
               key={job.id}
               className="bg-white p-6 rounded-lg shadow"
             >
-              {isEditing ? (
-                <div className="space-y-4">
-                  <div>
-                    <label className="block font-semibold">
-                      Job Title
-                    </label>
-
-                    <input
-                      value={editTitle}
-                      onChange={(event) =>
-                        setEditTitle(
-                          event.target.value
-                        )
-                      }
-                      className="mt-2 border rounded p-2 w-full"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block font-semibold">
-                      Company
-                    </label>
-
-                    <input
-                      value={editCompany}
-                      onChange={(event) =>
-                        setEditCompany(
-                          event.target.value
-                        )
-                      }
-                      className="mt-2 border rounded p-2 w-full"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block font-semibold">
-                      Description
-                    </label>
-
-                    <textarea
-                      value={editDescription}
-                      onChange={(event) =>
-                        setEditDescription(
-                          event.target.value
-                        )
-                      }
-                      className="mt-2 border rounded p-2 w-full"
-                      rows={4}
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block font-semibold">
-                      Job URL
-                    </label>
-
-                    <input
-                      value={editUrl}
-                      onChange={(event) =>
-                        setEditUrl(
-                          event.target.value
-                        )
-                      }
-                      className="mt-2 border rounded p-2 w-full"
-                    />
-                  </div>
-
-                  <div className="flex gap-2">
-                    <button
-                      type="button"
-                      onClick={() =>
-                        saveJob(job.id)
-                      }
-                      disabled={isSaving}
-                      className="bg-blue-600 text-white px-4 py-2 rounded disabled:bg-gray-400"
-                    >
-                      {isSaving
-                        ? "Saving..."
-                        : "Save Changes"}
-                    </button>
-
-                    <button
-                      type="button"
-                      onClick={cancelEditing}
-                      disabled={isSaving}
-                      className="bg-gray-200 text-gray-800 px-4 py-2 rounded disabled:bg-gray-100"
-                    >
-                      Cancel
-                    </button>
-                  </div>
-                </div>
-              ) : (
-                <>
+              <div className="flex justify-between items-start gap-4">
+                <div className="flex-1">
                   <h3 className="text-lg font-semibold">
                     {job.title}
                   </h3>
@@ -356,37 +258,33 @@ function Jobs() {
                       View Job
                     </a>
                   )}
+                </div>
 
-                  <div className="mt-4 flex gap-2">
-                    <button
-                      type="button"
-                      onClick={() =>
-                        startEditing(job)
-                      }
-                      disabled={isDeleting}
-                      className="bg-gray-200 text-gray-800 px-4 py-2 rounded disabled:bg-gray-100"
-                    >
-                      Edit Job
-                    </button>
+                <div className="flex gap-3">
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setEditingJob(job)
+                    }
+                    className="text-blue-600 hover:text-blue-800 font-medium"
+                  >
+                    Edit
+                  </button>
 
-                    <button
-                      type="button"
-                      onClick={() =>
-                        deleteJob(job.id)
-                      }
-                      disabled={isDeleting}
-                      className="bg-red-600 text-white px-4 py-2 rounded disabled:bg-gray-400"
-                    >
-                      {isDeleting
-                        ? "Deleting..."
-                        : "Delete Job"}
-                    </button>
-                  </div>
-                </>
-              )}
+                  <button
+                    type="button"
+                    onClick={() =>
+                      deleteJob(job.id)
+                    }
+                    className="text-red-600 hover:text-red-800 font-medium"
+                  >
+                    Delete
+                  </button>
+                </div>
+              </div>
             </div>
-          );
-        })}
+          ))
+        )}
       </div>
     </div>
   );

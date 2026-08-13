@@ -1,6 +1,8 @@
 import type {
+  Experience,
   Job,
   JobApplication,
+  Project,
   UserProfile,
 } from "../types/index";
 
@@ -57,6 +59,180 @@ export async function saveProfileToApi(
   }
 
   return response.json();
+}
+
+// --------------------
+// API Experience Functions
+// --------------------
+
+export async function getExperiencesFromApi(
+  profileId: string
+): Promise<Experience[]> {
+  const response = await fetch(
+    `${API_URL}/profiles/${profileId}/experiences`
+  );
+
+  if (!response.ok) {
+    throw new Error("Failed to fetch experiences");
+  }
+
+  return response.json();
+}
+
+export async function createExperienceToApi(
+  profileId: string,
+  experience: {
+    company: string;
+    title: string;
+    description: string;
+    startDate: string;
+    endDate?: string;
+  }
+): Promise<Experience> {
+  const response = await fetch(
+    `${API_URL}/profiles/${profileId}/experiences`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(experience),
+    }
+  );
+
+  if (!response.ok) {
+    throw new Error("Failed to create experience");
+  }
+
+  return response.json();
+}
+
+export async function updateExperienceToApi(
+  experienceId: string,
+  experience: {
+    company?: string;
+    title?: string;
+    description?: string;
+    startDate?: string;
+    endDate?: string;
+  }
+): Promise<Experience> {
+  const response = await fetch(
+    `${API_URL}/profiles/experiences/${experienceId}`,
+    {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(experience),
+    }
+  );
+
+  if (!response.ok) {
+    throw new Error("Failed to update experience");
+  }
+
+  return response.json();
+}
+
+export async function deleteExperienceFromApi(
+  experienceId: string
+): Promise<void> {
+  const response = await fetch(
+    `${API_URL}/profiles/experiences/${experienceId}`,
+    {
+      method: "DELETE",
+    }
+  );
+
+  if (!response.ok) {
+    throw new Error("Failed to delete experience");
+  }
+}
+
+// --------------------
+// API Project Functions
+// --------------------
+
+export async function getProjectsFromApi(
+  profileId: string
+): Promise<Project[]> {
+  const response = await fetch(
+    `${API_URL}/profiles/${profileId}/projects`
+  );
+
+  if (!response.ok) {
+    throw new Error("Failed to fetch projects");
+  }
+
+  return response.json();
+}
+
+export async function createProjectToApi(
+  profileId: string,
+  project: {
+    name: string;
+    description: string;
+    technologies: string[];
+  }
+): Promise<Project> {
+  const response = await fetch(
+    `${API_URL}/profiles/${profileId}/projects`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(project),
+    }
+  );
+
+  if (!response.ok) {
+    throw new Error("Failed to create project");
+  }
+
+  return response.json();
+}
+
+export async function updateProjectToApi(
+  projectId: string,
+  project: {
+    name?: string;
+    description?: string;
+    technologies?: string[];
+  }
+): Promise<Project> {
+  const response = await fetch(
+    `${API_URL}/profiles/projects/${projectId}`,
+    {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(project),
+    }
+  );
+
+  if (!response.ok) {
+    throw new Error("Failed to update project");
+  }
+
+  return response.json();
+}
+
+export async function deleteProjectFromApi(
+  projectId: string
+): Promise<void> {
+  const response = await fetch(
+    `${API_URL}/profiles/projects/${projectId}`,
+    {
+      method: "DELETE",
+    }
+  );
+
+  if (!response.ok) {
+    throw new Error("Failed to delete project");
+  }
 }
 
 // --------------------
@@ -145,7 +321,6 @@ export async function deleteJobFromApi(
     throw new Error("Failed to delete job");
   }
 }
-
 
 // --------------------
 // API Application Functions
@@ -236,83 +411,4 @@ export async function deleteApplicationFromApi(
   if (!response.ok) {
     throw new Error("Failed to delete application");
   }
-}
-
-// --------------------
-// Temporary localStorage Functions
-// --------------------
-
-function getItem<T>(
-  key: string,
-  fallback: T
-): T {
-  const item = localStorage.getItem(key);
-
-  return item
-    ? JSON.parse(item)
-    : fallback;
-}
-
-function setItem<T>(
-  key: string,
-  value: T
-) {
-  localStorage.setItem(
-    key,
-    JSON.stringify(value)
-  );
-}
-
-export function getProfile(
-  fallback: UserProfile
-) {
-  return getItem(
-    "profile",
-    fallback
-  );
-}
-
-export function saveProfile(
-  profile: UserProfile
-) {
-  setItem(
-    "profile",
-    profile
-  );
-}
-
-export function getJobs(
-  fallback: Job[]
-) {
-  return getItem(
-    "jobs",
-    fallback
-  );
-}
-
-export function saveJobs(
-  jobs: Job[]
-) {
-  setItem(
-    "jobs",
-    jobs
-  );
-}
-
-export function getApplications(
-  fallback: JobApplication[]
-) {
-  return getItem(
-    "applications",
-    fallback
-  );
-}
-
-export function saveApplications(
-  applications: JobApplication[]
-) {
-  setItem(
-    "applications",
-    applications
-  );
 }

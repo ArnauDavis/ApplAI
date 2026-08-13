@@ -1,11 +1,23 @@
 import { useEffect, useState } from "react";
 import ProfileForm from "../components/ProfileForm";
+import ProjectForm from "../components/ProjectForm";
+import ProjectSection from "../components/ProjectSection";
+import ExperienceForm from "../components/ExperienceForm";
+import ExperienceSection from "../components/ExperienceSection";
 import {
+  createExperienceToApi,
+  deleteExperienceFromApi,
   getProfilesFromApi,
   saveProfileToApi,
+  createProjectToApi,
+  deleteProjectFromApi,
+  updateProjectToApi,
 } from "../services/storageService";
-import type { UserProfile } from "../types/index";
-
+import type {
+  Experience,
+  Project,
+  UserProfile,
+} from "../types/index";
 
 function Profile() {
   const [profile, setProfile] =
@@ -17,6 +29,8 @@ function Profile() {
   const [error, setError] =
     useState<string | null>(null);
 
+  const [editingProject, setEditingProject] =
+    useState<Project | null>(null);
 
   useEffect(() => {
     async function loadProfile() {
@@ -25,9 +39,7 @@ function Profile() {
           await getProfilesFromApi();
 
         if (profiles.length === 0) {
-          setError(
-            "No profile was found."
-          );
+          setError("No profile was found.");
           return;
         }
 
@@ -46,10 +58,8 @@ function Profile() {
       }
     }
 
-
     loadProfile();
   }, []);
-
 
   async function updateProfile(
     updatedProfile: UserProfile
@@ -74,6 +84,205 @@ function Profile() {
     }
   }
 
+  async function addExperience(
+    experience: {
+      company: string;
+      title: string;
+      description: string;
+      startDate: string;
+      endDate?: string;
+    }
+  ) {
+    if (!profile) {
+      return;
+    }
+
+    try {
+      const newExperience =
+        await createExperienceToApi(
+          profile.id,
+          experience
+        );
+
+      setProfile({
+        ...profile,
+        experience: [
+          ...profile.experience,
+          newExperience,
+        ],
+      });
+
+      setError(null);
+    } catch (error) {
+      console.error(
+        "Failed to create experience:",
+        error
+      );
+
+      setError(
+        "Unable to add experience."
+      );
+
+      throw error;
+    }
+  }
+
+  async function deleteExperience(
+    experienceId: string
+  ) {
+    if (!profile) {
+      return;
+    }
+
+    try {
+      await deleteExperienceFromApi(
+        experienceId
+      );
+
+      setProfile({
+        ...profile,
+        experience:
+          profile.experience.filter(
+            (experience) =>
+              experience.id !== experienceId
+          ),
+      });
+
+      setError(null);
+    } catch (error) {
+      console.error(
+        "Failed to delete experience:",
+        error
+      );
+
+      setError(
+        "Unable to delete experience."
+      );
+
+      throw error;
+    }
+  }
+
+  async function addProject(
+    project: {
+      name: string;
+      description: string;
+      technologies: string[];
+    }
+  ) {
+    if (!profile) {
+      return;
+    }
+
+    try {
+      const newProject =
+        await createProjectToApi(
+          profile.id,
+          project
+        );
+
+      setProfile({
+        ...profile,
+        projects: [
+          ...profile.projects,
+          newProject,
+        ],
+      });
+
+      setError(null);
+    } catch (error) {
+      console.error(
+        "Failed to create project:",
+        error
+      );
+
+      setError(
+        "Unable to add project."
+      );
+
+      throw error;
+    }
+  }
+
+  async function updateProject(
+    projectId: string,
+    project: {
+      name: string;
+      description: string;
+      technologies: string[];
+    }
+  ) {
+    if (!profile) {
+      return;
+    }
+
+    try {
+      const updatedProject =
+        await updateProjectToApi(
+          projectId,
+          project
+        );
+
+      setProfile({
+        ...profile,
+        projects: profile.projects.map(
+          (existingProject) =>
+            existingProject.id === projectId
+              ? updatedProject
+              : existingProject
+        ),
+      });
+
+      setEditingProject(null);
+      setError(null);
+    } catch (error) {
+      console.error(
+        "Failed to update project:",
+        error
+      );
+
+      setError(
+        "Unable to update project."
+      );
+
+      throw error;
+    }
+  }
+
+  async function deleteProject(
+    projectId: string
+  ) {
+    if (!profile) {
+      return;
+    }
+
+    try {
+      await deleteProjectFromApi(
+        projectId
+      );
+
+      setProfile({
+        ...profile,
+        projects: profile.projects.filter(
+          (project) =>
+            project.id !== projectId
+        ),
+      });
+
+      setError(null);
+    } catch (error) {
+      console.error(
+        "Failed to delete project:",
+        error
+      );
+
+      setError(
+        "Unable to delete project."
+      );
+
+      throw error;
+    }
+  }
 
   if (loading) {
     return (
@@ -89,7 +298,6 @@ function Profile() {
     );
   }
 
-
   if (!profile) {
     return (
       <div>
@@ -103,7 +311,6 @@ function Profile() {
       </div>
     );
   }
-
 
   return (
     <div>
@@ -121,6 +328,48 @@ function Profile() {
         <ProfileForm
           profile={profile}
           onSave={updateProfile}
+        />
+      </div>
+
+      <div className="mt-6">
+        <ExperienceForm
+          onSave={addExperience}
+        />
+      </div>
+
+      <div className="mt-6">
+        <ExperienceSection
+          experiences={profile.experience}
+          onDelete={deleteExperience}
+        />
+      </div>
+
+      <div className="mt-6">
+        {editingProject ? (
+          <ProjectForm
+            project={editingProject}
+            onSave={(project) =>
+              updateProject(
+                editingProject.id,
+                project
+              )
+            }
+            onCancel={() =>
+              setEditingProject(null)
+            }
+          />
+        ) : (
+          <ProjectForm
+            onSave={addProject}
+          />
+        )}
+      </div>
+
+      <div className="mt-6">
+        <ProjectSection
+          projects={profile.projects}
+          onDelete={deleteProject}
+          onEdit={setEditingProject}
         />
       </div>
 
@@ -157,6 +406,5 @@ function Profile() {
     </div>
   );
 }
-
 
 export default Profile;

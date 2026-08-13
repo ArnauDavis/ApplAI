@@ -13,7 +13,7 @@ export interface UserProfile {
 export interface Experience {
   id: string;
   company: string;
-  role: string;
+  title: string;
   description: string;
   startDate: string;
   endDate?: string | null;

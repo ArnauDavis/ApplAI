@@ -1,36 +1,32 @@
 import { useEffect, useState } from "react";
-import type { Job } from "../types/index";
+import type { Project } from "../types/index";
 
-interface JobFormProps {
-  job?: Job;
-  onSave: (job: {
-    title: string;
-    company: string;
+interface ProjectFormProps {
+  project?: Project;
+  onSave: (project: {
+    name: string;
     description: string;
-    url?: string;
+    technologies: string[];
   }) => Promise<void>;
   onCancel?: () => void;
 }
 
-function JobForm({
-  job,
+function ProjectForm({
+  project,
   onSave,
   onCancel,
-}: JobFormProps) {
-  const [title, setTitle] = useState(
-    job?.title ?? ""
-  );
-
-  const [company, setCompany] = useState(
-    job?.company ?? ""
+}: ProjectFormProps) {
+  const [name, setName] = useState(
+    project?.name ?? ""
   );
 
   const [description, setDescription] =
-    useState(job?.description ?? "");
+    useState(project?.description ?? "");
 
-  const [url, setUrl] = useState(
-    job?.url ?? ""
-  );
+  const [technologies, setTechnologies] =
+    useState(
+      project?.technologies.join(", ") ?? ""
+    );
 
   const [saving, setSaving] =
     useState(false);
@@ -39,19 +35,22 @@ function JobForm({
     useState(false);
 
   useEffect(() => {
-    setTitle(job?.title ?? "");
-    setCompany(job?.company ?? "");
-    setDescription(job?.description ?? "");
-    setUrl(job?.url ?? "");
+    setName(project?.name ?? "");
+    setDescription(
+      project?.description ?? ""
+    );
+    setTechnologies(
+      project?.technologies.join(", ") ?? ""
+    );
     setSaved(false);
-  }, [job]);
+  }, [project]);
 
   async function handleSubmit(
     event: React.FormEvent
   ) {
     event.preventDefault();
 
-    if (!title.trim() || !company.trim()) {
+    if (!name.trim()) {
       return;
     }
 
@@ -59,20 +58,24 @@ function JobForm({
     setSaved(false);
 
     try {
+      const technologyList =
+        technologies
+          .split(",")
+          .map((technology) =>
+            technology.trim()
+          )
+          .filter(Boolean);
+
       await onSave({
-        title: title.trim(),
-        company: company.trim(),
+        name: name.trim(),
         description: description.trim(),
-        ...(url.trim()
-          ? { url: url.trim() }
-          : {}),
+        technologies: technologyList,
       });
 
-      if (!job) {
-        setTitle("");
-        setCompany("");
+      if (!project) {
+        setName("");
         setDescription("");
-        setUrl("");
+        setTechnologies("");
         setSaved(true);
       }
     } finally {
@@ -86,37 +89,23 @@ function JobForm({
       className="bg-white p-6 rounded-lg shadow space-y-4"
     >
       <h3 className="text-xl font-semibold">
-        {job ? "Edit Job" : "Add Job"}
+        {project
+          ? "Edit Project"
+          : "Add Project"}
       </h3>
 
       <div>
         <label className="block font-semibold">
-          Job Title
+          Project Name
         </label>
 
         <input
-          value={title}
+          value={name}
           onChange={(event) =>
-            setTitle(event.target.value)
+            setName(event.target.value)
           }
           className="mt-2 border rounded p-2 w-full"
-          placeholder="Software Engineer"
-          required
-        />
-      </div>
-
-      <div>
-        <label className="block font-semibold">
-          Company
-        </label>
-
-        <input
-          value={company}
-          onChange={(event) =>
-            setCompany(event.target.value)
-          }
-          className="mt-2 border rounded p-2 w-full"
-          placeholder="Example Company"
+          placeholder="My Project"
           required
         />
       </div>
@@ -133,24 +122,27 @@ function JobForm({
           }
           className="mt-2 border rounded p-2 w-full"
           rows={4}
-          placeholder="Describe the position..."
+          placeholder="Describe what you built..."
         />
       </div>
 
       <div>
         <label className="block font-semibold">
-          Job URL
+          Technologies
         </label>
 
         <input
-          type="url"
-          value={url}
+          value={technologies}
           onChange={(event) =>
-            setUrl(event.target.value)
+            setTechnologies(event.target.value)
           }
           className="mt-2 border rounded p-2 w-full"
-          placeholder="https://example.com/job"
+          placeholder="React, TypeScript, PostgreSQL"
         />
+
+        <p className="mt-1 text-sm text-gray-500">
+          Separate technologies with commas.
+        </p>
       </div>
 
       <div className="flex gap-3">
@@ -161,12 +153,12 @@ function JobForm({
         >
           {saving
             ? "Saving..."
-            : job
+            : project
               ? "Save Changes"
-              : "Add Job"}
+              : "Add Project"}
         </button>
 
-        {job && onCancel && (
+        {project && onCancel && (
           <button
             type="button"
             onClick={onCancel}
@@ -179,11 +171,11 @@ function JobForm({
 
       {saved && (
         <p className="text-green-600 font-medium">
-          Job added successfully.
+          Project added successfully.
         </p>
       )}
     </form>
   );
 }
 
-export default JobForm;
+export default ProjectForm;
