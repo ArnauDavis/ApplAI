@@ -130,7 +130,15 @@ router.put("/experiences/:id", async (req, res) => {
 });
 
 router.delete("/experiences/:id", async (req, res) => {
-  await deleteExperience(req.params.id);
+  const deleted =
+    await deleteExperience(req.params.id);
+
+  if (!deleted) {
+    res.status(404).json({
+      message: "Experience not found",
+    });
+    return;
+  }
 
   res.status(204).send();
 });

@@ -96,11 +96,11 @@ export async function updateExperience(
 export async function deleteExperience(
   id: string
 ): Promise<boolean> {
-  await prisma.experience.delete({
+  const result = await prisma.experience.deleteMany({
     where: {
       id,
     },
   });
 
-  return true;
+  return result.count > 0;
 }

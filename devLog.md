@@ -2,7 +2,7 @@
 
 ## Project Status
 
-**Current Phase:** Core frontend-to-backend integration complete → Finishing remaining API integrations
+**Current Phase:** Core frontend-to-backend integration complete → Dashboard API integration next
 
 **Project Type:** Learning project + potential real product
 
@@ -267,47 +267,38 @@ Applied
 Interview
 Offer
 Rejected
-```
-
----
-
-# Technical Direction
-
-## Frontend
+Technical Direction
+Frontend
 
 Chosen:
 
-* React
-* TypeScript
-* TSX
-* Tailwind CSS
+React
+TypeScript
+TSX
+Tailwind CSS
 
 Goals:
 
-* Learn component architecture.
-* Build reusable UI.
-* Practice TypeScript.
-
----
-
-## Backend
+Learn component architecture.
+Build reusable UI.
+Practice TypeScript.
+Backend
 
 Chosen direction:
 
-* Node.js + TypeScript.
-* Express API framework.
-* PostgreSQL database.
-* Prisma ORM.
+Node.js + TypeScript.
+Express API framework.
+PostgreSQL database.
+Prisma ORM.
 
 Goals:
 
-* Learn backend development using the same language as the frontend.
-* Create a clear API layer between the React application and database.
-* Build a foundation for future AI integration.
+Learn backend development using the same language as the frontend.
+Create a clear API layer between the React application and database.
+Build a foundation for future AI integration.
 
 Architecture:
 
-```text
 React App
     |
     v
@@ -318,21 +309,17 @@ Prisma ORM
     |
     v
 PostgreSQL Database
-```
 
 The core backend MVP is complete.
 
-The frontend currently uses a temporary localStorage service and is now being prepared to connect to the backend API.
+The frontend is now connected to the backend API for the main application workflows.
 
----
-
-## AI Integration
+AI Integration
 
 The AI layer should be separated from the frontend.
 
 Future architecture:
 
-```text
 React App
     |
 Backend API
@@ -340,11 +327,7 @@ Backend API
 AI Service
     |
 AI Provider
-```
-
----
-
-# Initial Development Philosophy
+Initial Development Philosophy
 
 Avoid over-planning.
 
@@ -354,41 +337,8 @@ Do not create complexity before it is needed.
 
 Documentation should support development, not replace it.
 
----
-
-# Current Technical Plan
-
-## First Build Goal
-
-Create a working frontend application.
-
-Initial features:
-
-* App layout.
-* Navigation.
-* Dashboard page.
-* Profile page.
-* Jobs page.
-* Applications page.
-
-No AI integration initially.
-
-Reason:
-
-We need the product structure before adding intelligence.
-
----
-
-# Development Milestones
-
-## Milestone 1 — Project Setup
-
-Tasks:
-
-* Create React + TypeScript project.
-* Install Tailwind CSS.
-* Configure development environment.
-* Create folder structure.
+Development Milestones
+Milestone 1 — Project Setup
 
 Status: COMPLETE
 
@@ -399,16 +349,7 @@ Completed:
 ✅ Installed dependencies
 ✅ Verified local development server
 
----
-
-## Milestone 2 — UI Foundation
-
-Build:
-
-* Layout.
-* Navigation.
-* Pages.
-* Components.
+Milestone 2 — UI Foundation
 
 Status: COMPLETE
 
@@ -421,10 +362,10 @@ Completed:
 ✅ Created reusable Navigation component
 ✅ Created initial page components:
 
-* Dashboard
-* Profile
-* Jobs
-* Applications
+Dashboard
+Profile
+Jobs
+Applications
 
 ✅ Installed React Router
 ✅ Added BrowserRouter configuration
@@ -433,31 +374,21 @@ Completed:
 
 Implementation decisions:
 
-* Avoided creating folders before files were needed.
-* Built the application incrementally.
-* Kept App.tsx responsible for overall application layout and routing.
-* Created reusable UI components only when there was a clear need.
-* Created page components for complete application screens.
-* Added routing only after multiple pages existed.
-* Used React Router for client-side navigation.
+Avoided creating folders before files were needed.
+Built the application incrementally.
+Kept App.tsx responsible for overall application layout and routing.
+Created reusable UI components only when there was a clear need.
+Created page components for complete application screens.
+Added routing only after multiple pages existed.
+Used React Router for client-side navigation.
 
-Current application behavior:
+Current routes:
 
-* Application has a shared header.
-* Application has a navigation sidebar.
-* Users can navigate between pages without refreshing.
-* Routes currently available:
-
-```text
 /              Dashboard
 /profile       Profile
 /jobs          Jobs
 /applications  Applications
-```
-
----
-
-## Milestone 3 — Data Modeling
+Milestone 3 — Data Modeling
 
 Status: COMPLETE
 
@@ -477,9 +408,8 @@ Completed:
 ✅ Connected Applications page to application data
 ✅ Connected Dashboard page to application summaries
 
-Data flow:
+Data flow originally used:
 
-```text
 types/index.ts
       |
       v
@@ -490,25 +420,21 @@ pages/
       |
       v
 UI
-```
+
+The mock data layer is now being phased out in favor of API-backed data.
 
 Implementation decisions:
 
-* Created folders only when files were needed.
-* Built data models before connecting UI to avoid hardcoded page content.
-* Used TypeScript interfaces to define application data shapes.
-* Used mock data as a temporary replacement for future API/database data.
-* Used `import type` for TypeScript-only imports.
+Created folders only when files were needed.
+Built data models before connecting UI to avoid hardcoded page content.
+Used TypeScript interfaces to define application data shapes.
+Used mock data as a temporary replacement for future API/database data.
+Used import type for TypeScript-only imports.
 
 Example:
 
-```ts
 import type { UserProfile } from "../types/index";
-```
-
----
-
-## Milestone 4 — Application Interaction
+Milestone 4 — Application Interaction
 
 Status: COMPLETE
 
@@ -527,23 +453,14 @@ Completed:
 ✅ Added application status updates
 ✅ Created ApplicationForm component
 ✅ Added application creation workflow
-✅ Added localStorage persistence for profile data
-✅ Added localStorage persistence for job data
-✅ Added localStorage persistence for application data
+✅ Added localStorage persistence during the initial frontend phase
 ✅ Created frontend data service layer
 ✅ Removed direct localStorage usage from page components
+✅ Added Experience creation, editing, and deletion
+✅ Added Project creation, editing, and deletion
 
-Current application behavior:
+The initial frontend data flow was:
 
-* Users can create and update profile information.
-* Users can create job opportunities.
-* Users can create applications from available jobs.
-* Users can update application statuses.
-* User data persists after browser refresh.
-
-Current frontend data flow:
-
-```text
 Components
     |
     v
@@ -554,40 +471,10 @@ Services
     |
     v
 localStorage
-```
 
-Implementation decisions:
+This was temporary and has now been replaced for the main application workflows by API persistence.
 
-* Components are responsible for UI only.
-* Pages manage application state.
-* Services manage data persistence.
-* Data storage is abstracted behind a service layer.
-* localStorage is being used as temporary persistence before backend implementation.
-
-Future replacement:
-
-```text
-Components
-    |
-    v
-Pages
-    |
-    v
-Services
-    |
-    v
-API
-    |
-    v
-Prisma
-    |
-    v
-PostgreSQL
-```
-
----
-
-## Milestone 5 — Backend
+Milestone 5 — Backend
 
 Status: COMPLETE
 
@@ -595,19 +482,19 @@ Technology decisions:
 
 Chosen:
 
-* Node.js
-* TypeScript
-* Express
-* Prisma ORM
-* PostgreSQL
+Node.js
+TypeScript
+Express
+Prisma ORM
+PostgreSQL
 
 Goals:
 
 Create a backend API that replaces frontend mock data and localStorage persistence.
 
-Completed:
+Backend foundation
 
-### Backend foundation
+Completed:
 
 ✅ Created backend application
 ✅ Configured Node.js + TypeScript
@@ -622,7 +509,9 @@ Completed:
 ✅ Created initial Prisma migration
 ✅ Connected backend to Prisma Client
 
-### Profile and career data
+Profile and career data
+
+Completed:
 
 ✅ Created UserProfile database model
 ✅ Created Experience database model
@@ -638,14 +527,18 @@ Completed:
 ✅ Added CRUD API routes for Education
 ✅ Added CRUD API routes for Projects
 
-### Job workflow
+Job workflow
+
+Completed:
 
 ✅ Created Job database model
 ✅ Created Job service layer
 ✅ Added Job API routes
 ✅ Tested Job CRUD workflow using curl
 
-### Application workflow
+Application workflow
+
+Completed:
 
 ✅ Created Application database model
 ✅ Created Application service layer
@@ -653,26 +546,27 @@ Completed:
 ✅ Connected Applications to Jobs
 ✅ Connected Applications to UserProfiles
 
-### Profile aggregation
+Profile aggregation
+
+Completed:
 
 ✅ Updated UserProfile aggregation to include:
 
-* Experience
-* Education
-* Projects
-* Jobs
-* Applications
+Experience
+Education
+Projects
+Jobs
+Applications
+Backend verification
 
-### Backend verification
+Completed:
 
 ✅ Tested Experience CRUD workflow using curl
 ✅ Tested Job CRUD workflow using curl
 ✅ Verified the complete profile workflow through the API
 ✅ Verified Prisma relationships and database persistence
 
-Current backend structure:
-
-```text
+Current Backend Structure
 backend/
 
 ├── prisma/
@@ -683,6 +577,9 @@ backend/
     ├── routes/
     │   ├── index.ts
     │   └── profileRoutes.ts
+    │
+    ├── data/
+    │   └── profileStore.ts
     │
     ├── services/
     │   ├── profileService.ts
@@ -699,80 +596,42 @@ backend/
     │   └── index.ts
     │
     └── server.ts
-```
-
-Implementation decisions:
-
-* Started with temporary in-memory storage before adding a database.
-* Added a service layer before introducing database logic.
-* Replaced temporary storage with Prisma queries.
-* Kept database access separated from API routes.
-* Continued using a service layer to isolate Prisma/database logic from Express routes.
-* Added relational data gradually instead of creating all models at once.
-* Verified each backend feature manually through API testing before moving forward.
-* Kept Experience logic inside profile services temporarily to reduce premature file separation.
-* Avoided adding unnecessary backend abstractions before they were needed.
-
-Current API:
-
-### Profile endpoints
-
-```text
+Current API
+Profile endpoints
 GET    /profiles
 POST   /profiles
 GET    /profiles/:id
 PUT    /profiles/:id
 DELETE /profiles/:id
-```
-
-### Experience endpoints
-
-```text
+Experience endpoints
 POST   /profiles/:profileId/experiences
 GET    /profiles/:profileId/experiences
 PUT    /profiles/experiences/:id
 DELETE /profiles/experiences/:id
-```
-
-### Education endpoints
-
-```text
+Education endpoints
 POST   /profiles/:profileId/education
 GET    /profiles/:profileId/education
 PUT    /profiles/education/:id
 DELETE /profiles/education/:id
-```
 
-### Project endpoints
+Education exists in the backend, but frontend education functionality is intentionally being skipped for now.
 
-```text
+Project endpoints
 POST   /profiles/:profileId/projects
 GET    /profiles/:profileId/projects
 PUT    /profiles/projects/:id
 DELETE /profiles/projects/:id
-```
-
-### Job endpoints
-
-```text
+Job endpoints
 POST   /profiles/:profileId/jobs
 GET    /profiles/:profileId/jobs
 PUT    /profiles/jobs/:id
 DELETE /profiles/jobs/:id
-```
-
-### Application endpoints
-
-```text
+Application endpoints
 POST   /profiles/:profileId/applications
 GET    /profiles/:profileId/applications
 PUT    /profiles/applications/:id
 DELETE /profiles/applications/:id
-```
-
-Current database model:
-
-```text
+Current Database Models
 UserProfile
 
 id
@@ -781,9 +640,6 @@ summary
 skills
 createdAt
 updatedAt
-```
-
-```text
 Experience
 
 id
@@ -795,9 +651,6 @@ endDate
 userProfileId
 createdAt
 updatedAt
-```
-
-```text
 Education
 
 id
@@ -807,9 +660,6 @@ field
 userProfileId
 createdAt
 updatedAt
-```
-
-```text
 Project
 
 id
@@ -819,9 +669,6 @@ technologies
 userProfileId
 createdAt
 updatedAt
-```
-
-```text
 Job
 
 id
@@ -832,9 +679,6 @@ url
 userProfileId
 createdAt
 updatedAt
-```
-
-```text
 Application
 
 id
@@ -844,11 +688,9 @@ jobId
 userProfileId
 createdAt
 updatedAt
-```
 
 Relationships:
 
-```text
 UserProfile
 |
 ├── Experience[]
@@ -856,55 +698,19 @@ UserProfile
 ├── Project[]
 ├── Job[]
 └── Application[]
-```
-
-```text
 Job
 |
 └── Application[]
-```
+Milestone 6 — Frontend API Integration
 
-### Remaining backend improvements
-
-These are not blockers for connecting the frontend:
-
-* Add request validation.
-* Add centralized error handling.
-* Add API response consistency.
-* Improve API error messages.
-* Improve environment-based configuration.
-* Add additional automated backend testing.
-
-These improvements will be addressed after the core frontend → API connection is working.
-
----
-
-## Milestone 6 — Frontend API Integration
-
-Status: IN PROGRESS
+Status: CORE INTEGRATION COMPLETE
 
 Goal:
 
 Replace the temporary frontend localStorage persistence with the backend API and PostgreSQL database.
 
-Current frontend persistence:
-
-```text
-Components
-    |
-    v
-Pages
-    |
-    v
-storageService.ts
-    |
-    v
-localStorage
-```
-
 Target architecture:
 
-```text
 Components
     |
     v
@@ -924,65 +730,91 @@ Prisma
     |
     v
 PostgreSQL
-```
+Completed frontend API integration
+Profile
 
+✅ Load profile from backend API
+✅ Update profile through backend API
+✅ Profile changes persist in PostgreSQL
 
-Completed
+Experience
 
-✅ Backend API is available
-✅ Backend CRUD services are available
-✅ Backend database persistence is available
-✅ Frontend service layer exists
-✅ Profile frontend connected to backend API
-✅ Profile updates persist through the API
-✅ Jobs frontend connected to backend API
-✅ Jobs can be created through the API
-✅ Jobs can be updated through the API
-✅ Jobs can be deleted through the API
-✅ Applications frontend connected to backend API
-✅ Applications can be created through the API
-✅ Application statuses can be updated through the API
-✅ Applications can be deleted through the API
-✅ Frontend error handling added for API operations
-✅ Loading states added to API-driven pages
-✅ Button feedback added for important actions such as saving, updating, and deleting
+✅ Load experiences from backend API
+✅ Create experiences through backend API
+✅ Edit experiences through backend API
+✅ Delete experiences through backend API
+✅ Experience changes persist in PostgreSQL
 
-Current status:
+Projects
 
-✅ Backend API is available
-✅ Backend CRUD services are available
-✅ Backend database persistence is available
-✅ Frontend service layer already exists
-⏳ Frontend services still use localStorage
-⏳ Frontend pages have not yet been connected to the backend API
-⏳ localStorage has not yet been removed
+✅ Load projects from backend API
+✅ Create projects through backend API
+✅ Edit projects through backend API
+✅ Delete projects through backend API
+✅ Project changes persist in PostgreSQL
 
-Current Frontend API Service
-src/services/storageService.ts
-
-The service now provides API functions for:
-
-Profiles
 Jobs
+
+✅ Load jobs from backend API
+✅ Create jobs through backend API
+✅ Edit jobs through backend API
+✅ Delete jobs through backend API
+✅ Open job URLs when provided
+✅ Job changes persist in PostgreSQL
+
 Applications
 
-Examples:
+✅ Load applications from backend API
+✅ Create applications through backend API
+✅ Update application statuses through backend API
+✅ Delete applications through backend API
+✅ Application changes persist in PostgreSQL
 
+Frontend UX
+
+✅ Added frontend API error handling
+✅ Added loading states to API-driven pages
+✅ Added saving/updating/deleting feedback
+✅ Added edit and delete controls for experience
+✅ Added edit and delete controls for projects
+✅ Added edit and delete controls for jobs
+✅ Removed unnecessary delete confirmation popup from experience deletion
+✅ Kept UI patterns consistent between editable sections
+
+Current Frontend API Service
+
+File:
+
+src/services/storageService.ts
+
+The file now contains API functions for:
+
+Profiles
 getProfilesFromApi()
 getProfileFromApi()
 saveProfileToApi()
-
+Experiences
+getExperiencesFromApi()
+createExperienceToApi()
+updateExperienceToApi()
+deleteExperienceFromApi()
+Projects
+getProjectsFromApi()
+createProjectToApi()
+updateProjectToApi()
+deleteProjectFromApi()
+Jobs
 getJobsFromApi()
 createJobToApi()
 updateJobToApi()
 deleteJobFromApi()
-
+Applications
 getApplicationsFromApi()
 createApplicationToApi()
 updateApplicationToApi()
 deleteApplicationFromApi()
 
-The frontend pages now communicate with the Express backend instead of relying on localStorage for the main application workflow.
+The frontend service layer now communicates with the Express backend.
 
 Current Frontend Data Flow
 Profile / Jobs / Applications Pages
@@ -1001,120 +833,161 @@ Profile / Jobs / Applications Pages
                 |
                 v
           PostgreSQL
-Jobs Workflow
 
-Users can currently:
+Profile-related data follows the same API architecture:
 
-View jobs stored in PostgreSQL.
-Add a job.
-Edit a job.
-Delete a job.
-Open a job URL when provided.
+Profile Page
+    |
+    ├── Profile API
+    ├── Experience API
+    └── Project API
+            |
+            v
+       Express API
+            |
+            v
+       Prisma
+            |
+            v
+       PostgreSQL
+Important Current State
 
-The Jobs page provides visual feedback while saving changes.
+The main frontend workflows no longer depend on localStorage.
 
-Applications Workflow
-
-Users can currently:
-
-View applications stored in PostgreSQL.
-Add an application to an existing job.
-Change application status.
-Delete an application.
-View application notes and job information.
-
-Application status changes are persisted through the backend API.
-
-Profile Workflow
-
-Users can currently:
-
-Load their profile from PostgreSQL.
-Edit their name.
-Edit their professional summary.
-Save profile changes through the backend API.
-Important Cleanup
-
-The old localStorage helper functions still exist in:
+The old localStorage helper functions still exist temporarily in:
 
 src/services/storageService.ts
 
-They are no longer required for the main API workflow.
+They are:
 
-They can remain temporarily while development continues, but should eventually be removed once all frontend pages have been confirmed to use the API exclusively.
+getProfile()
+saveProfile()
+
+getJobs()
+saveJobs()
+
+getApplications()
+saveApplications()
+
+These functions are now obsolete for the main application workflow.
+
+They should eventually be removed after the application has been fully verified to use the API exclusively.
+
+Dashboard Status
+
+The Dashboard is currently the next frontend area to update.
+
+Current Dashboard implementation still reads from:
+
+src/data/mockData.ts
+
+Current Dashboard data:
+
+Saved Jobs
+Applications
+Interviews
+
+The current values are calculated from mock data.
+
+Next task:
+
+Replace Dashboard mock data with API-backed data.
+
+Target:
+
+Dashboard
+    |
+    v
+storageService.ts
+    |
+    ├── getJobsFromApi()
+    └── getApplicationsFromApi()
+            |
+            v
+       Express API
+            |
+            v
+       PostgreSQL
+
+The Dashboard should eventually display live counts from the database rather than mock data.
 
 Remaining Milestone 6 Work
+Immediate next step
 
-⏳ Connect remaining profile-related data such as:
+⏳ Update src/pages/Dashboard.tsx to use the backend API.
 
-Experience
-Education
-Projects
+The Dashboard should:
 
-⏳ Review Dashboard data flow.
+Load the user's profile.
+Load the user's jobs.
+Load the user's applications.
+Calculate saved job count.
+Calculate application count.
+Calculate interview count.
+Display loading state.
+Display API error state.
+Remaining cleanup
 
-⏳ Remove obsolete localStorage functions after API integration is fully verified.
+After Dashboard API integration:
+
+⏳ Verify all frontend pages use the API exclusively.
+
+⏳ Remove obsolete localStorage helper functions.
+
+⏳ Remove unused mock data imports from pages.
+
+⏳ Determine whether src/data/mockData.ts is still needed.
 
 ⏳ Add any remaining frontend loading and error states.
 
-Development Approach
+Education
 
-Frontend API integration is being completed incrementally.
+Education backend functionality exists.
 
-Process:
+However, frontend Education functionality is intentionally being skipped for now.
 
-Inspect the existing file.
-Make the smallest necessary change.
-Test the feature.
-Confirm persistence in the backend.
-Move to the next feature.
+Reason:
 
-This approach is being used to avoid unnecessary refactoring and preserve working functionality.
-
-Current Status
-
-The core frontend-to-backend workflow is now working.
-
-The application currently has functional API-backed:
+The current development priority is completing the core frontend-to-backend workflow for:
 
 Profile
+Experience
+Projects
 Jobs
 Applications
+Dashboard
 
----
+Education can be added later without blocking the current milestone.
 
-## Milestone 7 — AI Features
+Remaining Backend Improvements
+
+These are not blockers for the current frontend workflow:
+
+Add request validation.
+Add centralized error handling.
+Add API response consistency.
+Improve API error messages.
+Improve environment-based configuration.
+Add additional automated backend testing.
+
+These improvements will be addressed after the core frontend application workflow is complete.
+
+Milestone 7 — AI Features
+
+Status: FUTURE
 
 Add:
 
-* Job analysis.
-* Application assistance.
-* AI workflows.
-
-Status:
-
-Future.
+Job analysis.
+Application assistance.
+AI workflows.
+Job matching.
+Resume assistance.
+Cover letter assistance.
 
 AI development will begin after the core full-stack application workflow is working reliably.
 
----
-
-# Current Project Structure
-
-```text
-AI-Job-Search-Assistant/
-
-├── DEVELOPER_LOG.md
-├── README.md
-├── package.json
-├── src/
-│
-└── ...
-```
-
-Current frontend structure:
-
-```text
+Current Frontend Structure
 src/
 ├── App.tsx
 ├── main.tsx
@@ -1123,6 +996,10 @@ src/
 │   ├── Header.tsx
 │   ├── Navigation.tsx
 │   ├── ProfileForm.tsx
+│   ├── ExperienceForm.tsx
+│   ├── ExperienceSection.tsx
+│   ├── ProjectForm.tsx
+│   ├── ProjectSection.tsx
 │   ├── JobForm.tsx
 │   ├── ApplicationForm.tsx
 │   └── ApplicationStatusSelect.tsx
@@ -1141,11 +1018,7 @@ src/
 │
 └── types/
     └── index.ts
-```
-
----
-
-# Completed Decisions
+Completed Decisions
 
 ✅ Product idea selected.
 ✅ Long-term AI agent vision established.
@@ -1163,36 +1036,82 @@ src/
 ✅ Backend service layer implemented.
 ✅ Backend CRUD API implemented for the core application models.
 ✅ Backend API tested during development.
-✅ Frontend-to-backend integration identified as the next major milestone.
+✅ Profile frontend connected to backend API.
+✅ Experience frontend connected to backend API.
+✅ Project frontend connected to backend API.
+✅ Jobs frontend connected to backend API.
+✅ Applications frontend connected to backend API.
+✅ Frontend loading and error handling added.
+✅ Frontend CRUD workflows verified for Profile, Experience, Projects, Jobs, and Applications.
+✅ Education intentionally deferred.
 
----
+Current Next Step
 
-# Current Next Step
+Update:
 
-Begin replacing the frontend's temporary localStorage persistence with backend API calls.
+src/pages/Dashboard.tsx
 
-The backend core is complete enough to support the frontend.
+The Dashboard currently uses mock data.
 
-The immediate development approach is:
+The next change should replace:
 
-* Work on one file at a time.
-* Inspect the existing implementation before changing it.
-* Make the smallest necessary change.
-* Test after each change.
-* Avoid unnecessary refactoring.
-* Preserve working functionality while transitioning from localStorage to PostgreSQL.
+import { mockApplications, mockJobs } from "../data/mockData";
 
-The first frontend file being reviewed for this transition is:
+with API-backed data from:
 
-```text
 src/services/storageService.ts
-```
 
-No changes have been made to the frontend API integration yet.
+The Dashboard should use the same backend architecture as the rest of the application.
 
----
+Development should continue one file at a time.
 
-# Notes For Future AI Assistants
+Development Approach
+
+The project is being developed incrementally.
+
+Process:
+
+Inspect the existing file.
+Understand how it currently works.
+Make the smallest necessary change.
+Test the feature.
+Confirm persistence in PostgreSQL.
+Update this developer log.
+Move to the next feature.
+
+Avoid unnecessary refactoring.
+
+Preserve working functionality while improving the architecture.
+
+Current Overall Status
+
+The core full-stack application workflow is now working.
+
+The application currently has functional API-backed:
+
+Profile
+Experience
+Projects
+Jobs
+Applications
+
+The next major task is:
+
+Dashboard → API integration
+
+After that:
+
+Remove obsolete localStorage
+        |
+        v
+Clean up mock data
+        |
+        v
+Finish Milestone 6
+        |
+        v
+Begin AI feature planning
+Notes For Future AI Assistants
 
 Read this file first.
 
@@ -1200,10 +1119,13 @@ The goal is to build a trustworthy AI job search assistant.
 
 Priorities:
 
-1. Build useful software.
-2. Learn good engineering practices.
-3. Avoid unnecessary complexity.
-4. Keep users in control.
-5. Document important decisions.
-6. Work incrementally and verify changes before moving forward.
-7. Prefer understanding the existing implementation before introducing changes.
+Build useful software.
+Learn good engineering practices.
+Avoid unnecessary complexity.
+Keep users in control.
+Document important decisions.
+Work incrementally and verify changes before moving forward.
+Prefer understanding the existing implementation before introducing changes.
+Work one file at a time when making development changes.
+Do not introduce new architecture unless the existing architecture cannot reasonably support the requirement.
+Preserve working functionality while making incremental improvements.
