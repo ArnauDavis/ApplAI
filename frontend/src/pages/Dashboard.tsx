@@ -31,16 +31,32 @@ function Dashboard() {
           return;
         }
 
-        const profile = profiles[0];
+        const profileId =
+          profiles[0].id;
 
-        const [profileJobs, profileApplications] =
-          await Promise.all([
-            getJobsFromApi(profile.id),
-            getApplicationsFromApi(profile.id),
-          ]);
+        const [
+          profileJobs,
+          profileApplications,
+        ] = await Promise.all([
+          getJobsFromApi(profileId),
+          getApplicationsFromApi(profileId),
+        ]);
 
         setJobs(profileJobs);
-        setApplications(profileApplications);
+
+        setApplications(
+          profileApplications.map(
+            (application) => ({
+              id: application.id,
+              status:
+                application.status as JobApplication["status"],
+              notes:
+                application.notes ?? "",
+              job: application.job,
+            })
+          )
+        );
+
         setError(null);
       } catch (error) {
         console.error(
@@ -60,12 +76,15 @@ function Dashboard() {
   }, []);
 
   const savedJobs = jobs.length;
-  const applicationCount = applications.length;
 
-  const interviews = applications.filter(
-    (application) =>
-      application.status === "Interview"
-  ).length;
+  const applicationCount =
+    applications.length;
+
+  const interviews =
+    applications.filter(
+      (application) =>
+        application.status === "Interview"
+    ).length;
 
   if (loading) {
     return (

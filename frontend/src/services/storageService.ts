@@ -6,7 +6,8 @@ import type {
   UserProfile,
 } from "../types/index";
 
-const API_URL = "http://localhost:3000";
+const API_URL =
+  import.meta.env.VITE_API_URL;
 
 // --------------------
 // API Profile Functions

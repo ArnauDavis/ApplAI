@@ -259,7 +259,6 @@ Track:
 
 Statuses:
 
-```text
 Saved
 Reviewing
 Preparing
@@ -413,9 +412,6 @@ Data flow originally used:
 types/index.ts
       |
       v
-data/mockData.ts
-      |
-      v
 pages/
       |
       v
@@ -566,36 +562,7 @@ Completed:
 ✅ Verified the complete profile workflow through the API
 ✅ Verified Prisma relationships and database persistence
 
-Current Backend Structure
-backend/
 
-├── prisma/
-│   ├── schema.prisma
-│   └── migrations/
-│
-└── src/
-    ├── routes/
-    │   ├── index.ts
-    │   └── profileRoutes.ts
-    │
-    ├── data/
-    │   └── profileStore.ts
-    │
-    ├── services/
-    │   ├── profileService.ts
-    │   ├── experienceService.ts
-    │   ├── educationService.ts
-    │   ├── projectService.ts
-    │   ├── jobService.ts
-    │   └── applicationService.ts
-    │
-    ├── lib/
-    │   └── prisma.ts
-    │
-    ├── types/
-    │   └── index.ts
-    │
-    └── server.ts
 Current API
 Profile endpoints
 GET    /profiles
@@ -701,431 +668,345 @@ UserProfile
 Job
 |
 └── Application[]
-Milestone 6 — Frontend API Integration
 
-Status: CORE INTEGRATION COMPLETE
+## Milestone 6 — Frontend API Integration
+
+Status: COMPLETE
+
+Frontend features connected to the backend:
+
+✅ Profile
+✅ Experience
+✅ Projects
+✅ Jobs
+✅ Applications
+✅ Dashboard
+
+All primary application data now flows through:
+
+React
+    ↓
+Frontend API Service
+    ↓
+Express API
+    ↓
+Backend Services
+    ↓
+Prisma
+    ↓
+PostgreSQL
+
+✅ localStorage removed from the active workflow
+✅ mockData removed
+✅ Dashboard verified
+✅ API persistence verified
+✅ Loading states implemented
+✅ Error handling implemented
+
+ ## Milestone 7 — AI Integration
+
+Status: IN PROGRESS
 
 Goal:
 
-Replace the temporary frontend localStorage persistence with the backend API and PostgreSQL database.
+Begin adding AI capabilities to the job search assistant while keeping the AI layer separated from the frontend and core application logic.
 
-Target architecture:
+The initial AI provider strategy is:
 
-Components
-    |
-    v
-Pages
-    |
-    v
-Frontend API Services
-    |
-    v
+* Ollama for local AI development.
+* Hugging Face for remote/cloud-based AI inference.
+
+The application should be able to use local models during development while keeping the architecture flexible enough to support Hugging Face models later.
+
+---
+
+## AI Architecture
+
+The planned architecture is:
+
+```text
+React Frontend
+      |
+      v
 Express API
-    |
-    v
-Backend Services
-    |
-    v
-Prisma
-    |
-    v
-PostgreSQL
-Completed frontend API integration
-Profile
-
-✅ Load profile from backend API
-✅ Update profile through backend API
-✅ Profile changes persist in PostgreSQL
-
-Experience
-
-✅ Load experiences from backend API
-✅ Create experiences through backend API
-✅ Edit experiences through backend API
-✅ Delete experiences through backend API
-✅ Experience changes persist in PostgreSQL
-
-Projects
-
-✅ Load projects from backend API
-✅ Create projects through backend API
-✅ Edit projects through backend API
-✅ Delete projects through backend API
-✅ Project changes persist in PostgreSQL
-
-Jobs
-
-✅ Load jobs from backend API
-✅ Create jobs through backend API
-✅ Edit jobs through backend API
-✅ Delete jobs through backend API
-✅ Open job URLs when provided
-✅ Job changes persist in PostgreSQL
-
-Applications
-
-✅ Load applications from backend API
-✅ Create applications through backend API
-✅ Update application statuses through backend API
-✅ Delete applications through backend API
-✅ Application changes persist in PostgreSQL
-
-Frontend UX
-
-✅ Added frontend API error handling
-✅ Added loading states to API-driven pages
-✅ Added saving/updating/deleting feedback
-✅ Added edit and delete controls for experience
-✅ Added edit and delete controls for projects
-✅ Added edit and delete controls for jobs
-✅ Removed unnecessary delete confirmation popup from experience deletion
-✅ Kept UI patterns consistent between editable sections
-
-Current Frontend API Service
-
-File:
-
-src/services/storageService.ts
-
-The file now contains API functions for:
-
-Profiles
-getProfilesFromApi()
-getProfileFromApi()
-saveProfileToApi()
-Experiences
-getExperiencesFromApi()
-createExperienceToApi()
-updateExperienceToApi()
-deleteExperienceFromApi()
-Projects
-getProjectsFromApi()
-createProjectToApi()
-updateProjectToApi()
-deleteProjectFromApi()
-Jobs
-getJobsFromApi()
-createJobToApi()
-updateJobToApi()
-deleteJobFromApi()
-Applications
-getApplicationsFromApi()
-createApplicationToApi()
-updateApplicationToApi()
-deleteApplicationFromApi()
-
-The frontend service layer now communicates with the Express backend.
-
-Current Frontend Data Flow
-Profile / Jobs / Applications Pages
-                |
-                v
-       storageService.ts
-                |
-                v
-          Express API
-                |
-                v
-       Backend Services
-                |
-                v
-             Prisma
-                |
-                v
-          PostgreSQL
+      |
+      v
+AI Service Layer
+      |
+      ├── Ollama
+      |
+      └── Hugging Face
 
-Profile-related data follows the same API architecture:
+The frontend will not communicate directly with Ollama or Hugging Face.
 
-Profile Page
-    |
-    ├── Profile API
-    ├── Experience API
-    └── Project API
-            |
-            v
-       Express API
-            |
-            v
-       Prisma
-            |
-            v
-       PostgreSQL
-Important Current State
+AI requests will go through the backend API.
 
-The main frontend workflows no longer depend on localStorage.
+This keeps provider-specific logic inside the backend and allows the AI provider to be changed without modifying the frontend.
 
-The old localStorage helper functions still exist temporarily in:
+Ollama
 
-src/services/storageService.ts
+Chosen as the first AI provider for local development.
 
-They are:
+Reasons:
 
-getProfile()
-saveProfile()
+Allows local model execution.
+Avoids external API costs during development.
+Keeps profile and job data local during initial AI development.
+Provides a practical environment for learning AI integration.
+Allows the application to experiment with different local models.
 
-getJobs()
-saveJobs()
+Ollama is being used through its Node.js package.
 
-getApplications()
-saveApplications()
+Installed in the backend:
 
-These functions are now obsolete for the main application workflow.
+ollama
 
-They should eventually be removed after the application has been fully verified to use the API exclusively.
+A local model is being used for initial development:
 
-Dashboard Status
+llama3.2
 
-The Dashboard is currently the next frontend area to update.
+The intended flow is:
 
-Current Dashboard implementation still reads from:
+Express
+   |
+   v
+ollamaService.ts
+   |
+   v
+Ollama
+   |
+   v
+Local AI Model
+Initial AI Service
 
-src/data/mockData.ts
+Created:
 
-Current Dashboard data:
+backend/src/ai/ollamaService.ts
 
-Saved Jobs
-Applications
-Interviews
+Current responsibility:
 
-The current values are calculated from mock data.
+Provide a simple backend function that sends a prompt to a locally running Ollama model and returns the generated response.
 
-Next task:
+Current structure:
 
-Replace Dashboard mock data with API-backed data.
+backend/
+└── src/
+    ├── ai/
+    │   ├── aiService.ts
+    │   ├── huggingFaceService.ts
+    │   └── ollamaService.ts
+    │
+    ├── routes/
+    ├── services/
+    ├── lib/
+    ├── types/
+    └── server.ts
 
-Target:
+The initial service is intentionally simple.
 
-Dashboard
-    |
-    v
-storageService.ts
-    |
-    ├── getJobsFromApi()
-    └── getApplicationsFromApi()
-            |
-            v
-       Express API
-            |
-            v
-       PostgreSQL
+The goal is to verify the complete communication path before adding more complex AI functionality.
 
-The Dashboard should eventually display live counts from the database rather than mock data.
+Hugging Face
 
-Remaining Milestone 6 Work
-Immediate next step
+Hugging Face is the planned second AI provider.
 
-⏳ Update src/pages/Dashboard.tsx to use the backend API.
+Purpose:
 
-The Dashboard should:
+Provide access to remote AI models.
+Allow experimentation with different models.
+Provide an alternative to locally running models.
+Prepare the application for future production AI infrastructure.
 
-Load the user's profile.
-Load the user's jobs.
-Load the user's applications.
-Calculate saved job count.
-Calculate application count.
-Calculate interview count.
-Display loading state.
-Display API error state.
-Remaining cleanup
-
-After Dashboard API integration:
-
-⏳ Verify all frontend pages use the API exclusively.
-
-⏳ Remove obsolete localStorage helper functions.
-
-⏳ Remove unused mock data imports from pages.
-
-⏳ Determine whether src/data/mockData.ts is still needed.
-
-⏳ Add any remaining frontend loading and error states.
-
-Education
-
-Education backend functionality exists.
-
-However, frontend Education functionality is intentionally being skipped for now.
-
-Reason:
-
-The current development priority is completing the core frontend-to-backend workflow for:
-
-Profile
-Experience
-Projects
-Jobs
-Applications
-Dashboard
-
-Education can be added later without blocking the current milestone.
-
-Remaining Backend Improvements
-
-These are not blockers for the current frontend workflow:
-
-Add request validation.
-Add centralized error handling.
-Add API response consistency.
-Improve API error messages.
-Improve environment-based configuration.
-Add additional automated backend testing.
+Hugging Face integration will be added after the Ollama integration has been verified.
 
-These improvements will be addressed after the core frontend application workflow is complete.
+The planned architecture is:
 
-Milestone 7 — AI Features
+AI Service Layer
+      |
+      ├── Ollama Service
+      |
+      └── Hugging Face Service
+First AI Feature
 
-Status: FUTURE
+The first AI feature will be:
 
-Add:
+Job Analysis
 
-Job analysis.
-Application assistance.
-AI workflows.
-Job matching.
-Resume assistance.
-Cover letter assistance.
+The AI will analyze a job against the user's career profile.
 
-AI development will begin after the core full-stack application workflow is working reliably.
+Input:
 
-Current Frontend Structure
-src/
-├── App.tsx
-├── main.tsx
-│
-├── components/
-│   ├── Header.tsx
-│   ├── Navigation.tsx
-│   ├── ProfileForm.tsx
-│   ├── ExperienceForm.tsx
-│   ├── ExperienceSection.tsx
-│   ├── ProjectForm.tsx
-│   ├── ProjectSection.tsx
-│   ├── JobForm.tsx
-│   ├── ApplicationForm.tsx
-│   └── ApplicationStatusSelect.tsx
-│
-├── pages/
-│   ├── Dashboard.tsx
-│   ├── Profile.tsx
-│   ├── Jobs.tsx
-│   └── Applications.tsx
-│
-├── data/
-│   └── mockData.ts
-│
-├── services/
-│   └── storageService.ts
-│
-└── types/
-    └── index.ts
-Completed Decisions
+User Profile
++
+Job Posting
 
-✅ Product idea selected.
-✅ Long-term AI agent vision established.
-✅ Human approval workflow established.
-✅ MVP defined.
-✅ Documentation simplified to one developer log.
-✅ React + TypeScript + Tailwind chosen.
-✅ Backend direction selected: Node.js + TypeScript + Express.
-✅ Database selected: PostgreSQL.
-✅ ORM selected: Prisma.
-✅ Frontend interaction architecture established.
-✅ Temporary frontend persistence implemented with localStorage.
-✅ Backend persistence implemented with PostgreSQL and Prisma.
-✅ UserProfile, Experience, Education, Project, Job, and Application backend models implemented.
-✅ Backend service layer implemented.
-✅ Backend CRUD API implemented for the core application models.
-✅ Backend API tested during development.
-✅ Profile frontend connected to backend API.
-✅ Experience frontend connected to backend API.
-✅ Project frontend connected to backend API.
-✅ Jobs frontend connected to backend API.
-✅ Applications frontend connected to backend API.
-✅ Frontend loading and error handling added.
-✅ Frontend CRUD workflows verified for Profile, Experience, Projects, Jobs, and Applications.
-✅ Education intentionally deferred.
+Expected output:
 
-Current Next Step
+Matching Skills
+Missing Skills
+Relevant Experience
+Concerns
+Suggestions
 
-Update:
+The AI should explain its reasoning rather than simply returning an unexplained numerical match score.
 
-src/pages/Dashboard.tsx
+Example:
 
-The Dashboard currently uses mock data.
+Strong match because:
 
-The next change should replace:
+* React experience matches the job requirement.
+* TypeScript experience matches the required frontend stack.
+* Previous project experience is relevant to the role.
 
-import { mockApplications, mockJobs } from "../data/mockData";
+Potential gap:
 
-with API-backed data from:
+* The job requires AWS experience that is not currently listed in the profile.
 
-src/services/storageService.ts
+The AI must only use information provided by the user and the job posting.
 
-The Dashboard should use the same backend architecture as the rest of the application.
+It must not invent:
 
-Development should continue one file at a time.
+Skills.
+Experience.
+Education.
+Achievements.
+Employment history.
+Human Control
 
+AI remains an assistant rather than a decision-maker.
+
+The AI can:
+
+Analyze.
+Suggest.
+Organize.
+Draft.
+Explain.
+
+The AI should not:
+
+Automatically apply for jobs.
+Make career decisions for the user.
+Invent qualifications.
+Submit applications without user approval.
 Development Approach
 
-The project is being developed incrementally.
+AI integration will follow the same incremental development approach used throughout the project.
 
 Process:
 
-Inspect the existing file.
-Understand how it currently works.
-Make the smallest necessary change.
-Test the feature.
-Confirm persistence in PostgreSQL.
-Update this developer log.
-Move to the next feature.
+Create the AI service.
+Verify communication with the local model.
+Create a small backend test endpoint.
+Test the AI response.
+Build the job-analysis service.
+Create the job-analysis API endpoint.
+Connect the frontend.
+Add Hugging Face support.
+Improve structured AI responses.
+Add validation and error handling.
 
-Avoid unnecessary refactoring.
+The first objective is not to build the complete AI agent.
 
-Preserve working functionality while improving the architecture.
+The first objective is to establish a reliable AI integration layer that can later support the larger job-search assistant.
 
-Current Overall Status
+Current Status
 
-The core full-stack application workflow is now working.
+Completed:
 
-The application currently has functional API-backed:
+✅ AI integration direction selected.
+✅ Ollama selected for local AI development.
+✅ Hugging Face selected as a future remote AI provider.
+✅ Ollama Node.js package installed.
+✅ AI directory created.
+✅ Initial ollamaService.ts created.
+✅ Local model selected for initial development.
 
-Profile
-Experience
-Projects
-Jobs
-Applications
+Current next step:
 
-The next major task is:
+⏳ Verify communication between the backend and Ollama.
+⏳ Create a small backend test endpoint.
+⏳ Confirm the backend can send a prompt to the local model and receive a response.
 
-Dashboard → API integration
+After Ollama communication is verified:
 
-After that:
+⏳ Build the first real AI feature: Job Analysis.
 
-Remove obsolete localStorage
-        |
-        v
-Clean up mock data
-        |
-        v
-Finish Milestone 6
-        |
-        v
-Begin AI feature planning
-Notes For Future AI Assistants
 
-Read this file first.
+## current file structure
 
-The goal is to build a trustworthy AI job search assistant.
+AI-Job-Search-Assistant/
 
-Priorities:
-
-Build useful software.
-Learn good engineering practices.
-Avoid unnecessary complexity.
-Keep users in control.
-Document important decisions.
-Work incrementally and verify changes before moving forward.
-Prefer understanding the existing implementation before introducing changes.
-Work one file at a time when making development changes.
-Do not introduce new architecture unless the existing architecture cannot reasonably support the requirement.
-Preserve working functionality while making incremental improvements.
+├── DEVELOPER_LOG.md
+├── README.md
+│
+├── frontend/
+│   ├── package.json
+│   ├── .env
+│   ├── index.html
+│   │
+│   └── src/
+│       ├── App.tsx
+│       ├── main.tsx
+│       │
+│       ├── components/
+│       │   ├── Header.tsx
+│       │   ├── Navigation.tsx
+│       │   ├── ProfileForm.tsx
+│       │   ├── ExperienceForm.tsx
+│       │   ├── ExperienceSection.tsx
+│       │   ├── ProjectForm.tsx
+│       │   ├── ProjectSection.tsx
+│       │   ├── JobForm.tsx
+│       │   ├── ApplicationForm.tsx
+│       │   └── ApplicationStatusSelect.tsx
+│       │
+│       ├── pages/
+│       │   ├── Dashboard.tsx
+│       │   ├── Profile.tsx
+│       │   ├── Jobs.tsx
+│       │   └── Applications.tsx
+│       │
+│       ├── data/
+│       │   
+│       │
+│       ├── services/
+│       │   └── storageService.ts
+│       │
+│       └── types/
+│           └── index.ts
+│
+└── backend/
+    ├── package.json
+    ├── prisma/
+    │   ├── schema.prisma
+    │   └── migrations/
+    │
+    └── src/
+        ├── ai/
+        │   ├── aiService.ts
+        │   ├── huggingFaceService.ts
+        │   └── ollamaService.ts
+        │
+        ├── routes/
+        │   ├── index.ts
+        │   └── profileRoutes.ts
+        │
+        ├── data/
+        │   └── profileStore.ts
+        │
+        ├── services/
+        │   ├── profileService.ts
+        │   ├── experienceService.ts
+        │   ├── educationService.ts
+        │   ├── projectService.ts
+        │   ├── jobService.ts
+        │   └── applicationService.ts
+        │
+        ├── lib/
+        │   └── prisma.ts
+        │
+        ├── types/
+        │   └── index.ts
+        │
+        └── server.ts

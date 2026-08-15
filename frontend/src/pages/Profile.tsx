@@ -375,7 +375,7 @@ function Profile() {
 
       <div className="mt-6 bg-white p-6 rounded-lg shadow">
         <h3 className="text-xl font-semibold">
-          Preview
+          Profile
         </h3>
 
         <p className="mt-2">
