@@ -910,7 +910,24 @@ The first objective is not to build the complete AI agent.
 
 The first objective is to establish a reliable AI integration layer that can later support the larger job-search assistant.
 
-Current Status
+AI integration is being developed incrementally.
+
+The first objective was to establish reliable communication between the backend and a local AI model.
+
+The integration was tested in stages:
+
+1. Verify Ollama communication.
+2. Create a backend AI test endpoint.
+3. Verify the backend can send prompts and receive responses.
+4. Build job analysis using real profile and job data.
+5. Connect job analysis to the frontend.
+6. Move from free-form AI responses to structured JSON.
+7. Improve the AI response contract and validation.
+8. Build the final user-facing AI analysis interface.
+
+This approach keeps AI provider integration separate from the frontend and allows individual pieces to be tested before adding additional complexity.
+
+## Current Status
 
 Completed:
 
@@ -919,18 +936,82 @@ Completed:
 ✅ Hugging Face selected as a future remote AI provider.
 ✅ Ollama Node.js package installed.
 ✅ AI directory created.
-✅ Initial ollamaService.ts created.
 ✅ Local model selected for initial development.
+✅ Verified communication between the backend and Ollama.
+✅ Created backend AI test endpoint.
+✅ Created job analysis service.
+✅ Created job analysis API endpoint.
+✅ Connected job analysis to profile and job data from PostgreSQL.
+✅ Connected frontend job analysis workflow to the backend.
+✅ Verified end-to-end job analysis from the frontend.
+✅ Updated Ollama integration to request structured JSON responses.
+✅ Verified Ollama can return the expected structured analysis format.
 
-Current next step:
+Current AI flow:
 
-⏳ Verify communication between the backend and Ollama.
-⏳ Create a small backend test endpoint.
-⏳ Confirm the backend can send a prompt to the local model and receive a response.
+React Frontend
+      |
+      v
+Express API
+      |
+      v
+Job Analysis Service
+      |
+      ├── Profile Service
+      │
+      └── Job Service
+      |
+      v
+AI Service
+      |
+      v
+Ollama
+      |
+      v
+llama3.2:3b
+      |
+      v
+Structured JSON analysis
 
-After Ollama communication is verified:
+Current structured analysis format:
 
-⏳ Build the first real AI feature: Job Analysis.
+{
+  "jobRequirements": [],
+  "matchingQualifications": [],
+  "missingRequirements": [],
+  "relevantExperience": [],
+  "potentialConcerns": [],
+  "suggestions": []
+}
+
+The AI response is currently parsed by the backend before being returned.
+
+Current API response still wraps the parsed analysis as a JSON string.
+
+Example:
+
+{
+  "result": "{\"jobRequirements\":[\"React\",\"TypeScript\"],...}"
+}
+
+This will be improved so the API returns the analysis as a JSON object rather than a JSON-encoded string.
+
+Known AI-quality issue:
+
+The model can still incorrectly classify information.
+
+For example, it may identify a candidate skill that is not a job requirement as a matching qualification, or treat product/domain context as a candidate gap.
+
+These issues will be addressed after the structured response contract is completed.
+
+Next steps:
+
+⏳ Update the AI service to return a structured analysis object.
+⏳ Update the API endpoint to return the structured object directly.
+⏳ Update the frontend to display structured analysis sections.
+⏳ Improve prompt rules and AI validation.
+⏳ Add stronger validation for AI-generated responses.
+⏳ Add Hugging Face support.
 
 
 ## current file structure
@@ -990,7 +1071,8 @@ AI-Job-Search-Assistant/
         │
         ├── routes/
         │   ├── index.ts
-        │   └── profileRoutes.ts
+        │   ├── profileRoutes.ts
+        │   └── aiRoutes.ts
         │
         ├── data/
         │   └── profileStore.ts
@@ -1001,6 +1083,7 @@ AI-Job-Search-Assistant/
         │   ├── educationService.ts
         │   ├── projectService.ts
         │   ├── jobService.ts
+        │   ├── jobAnalysisService.ts
         │   └── applicationService.ts
         │
         ├── lib/

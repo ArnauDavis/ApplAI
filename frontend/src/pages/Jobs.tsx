@@ -6,6 +6,8 @@ import {
   createJobToApi,
   updateJobToApi,
   deleteJobFromApi,
+  analyzeJobWithApi,
+  type JobAnalysis,
 } from "../services/storageService";
 import type { Job } from "../types/index";
 
@@ -22,6 +24,15 @@ function Jobs() {
     useState(true);
 
   const [error, setError] =
+    useState<string | null>(null);
+
+  const [analysisResults, setAnalysisResults] =
+    useState<Record<string, JobAnalysis>>({});
+
+  const [hiddenAnalysis, setHiddenAnalysis] =
+    useState<Record<string, boolean>>({});
+  
+  const [analyzingJobId, setAnalyzingJobId] =
     useState<string | null>(null);
 
   useEffect(() => {
@@ -170,6 +181,39 @@ function Jobs() {
     }
   }
 
+  async function analyzeJob(jobId: string) {
+    if (!profileId) {
+      setError("No profile is available.");
+      return;
+    }
+
+    try {
+      setAnalyzingJobId(jobId);
+      setError(null);
+
+      const result = await analyzeJobWithApi(
+        profileId,
+        jobId
+      );
+
+      setAnalysisResults((currentResults) => ({
+        ...currentResults,
+        [jobId]: result,
+      }));
+    } catch (error) {
+      console.error(
+        "Failed to analyze job:",
+        error
+      );
+
+      setError(
+        "Unable to analyze job."
+      );
+    } finally {
+      setAnalyzingJobId(null);
+    }
+  }
+
   if (loading) {
     return (
       <div>
@@ -258,9 +302,153 @@ function Jobs() {
                       View Job
                     </a>
                   )}
+                  {analysisResults[job.id] &&
+  !hiddenAnalysis[job.id] && (
+    <div className="mt-4 p-4 bg-purple-50 border border-purple-200 rounded-lg">
+      <h4 className="font-semibold text-purple-900">
+        AI Job Analysis
+      </h4>
+
+      <button
+        type="button"
+        onClick={() =>
+          setHiddenAnalysis((current) => ({
+            ...current,
+            [job.id]: true,
+          }))
+        }
+        className="mt-2 text-sm text-purple-600 hover:text-purple-800"
+      >
+        Hide Analysis
+      </button>
+
+      <div className="mt-3 space-y-4 text-sm text-gray-700">
+        <div>
+          <h5 className="font-semibold text-gray-900">
+            Job Requirements
+          </h5>
+
+          {analysisResults[job.id].jobRequirements.length > 0 ? (
+            <ul className="mt-1 list-disc list-inside">
+              {analysisResults[job.id].jobRequirements.map(
+                (item) => (
+                  <li key={item}>{item}</li>
+                )
+              )}
+            </ul>
+          ) : (
+            <p className="mt-1 text-gray-500">
+              No specific requirements identified.
+            </p>
+          )}
+        </div>
+
+        <div>
+          <h5 className="font-semibold text-gray-900">
+            Matching Qualifications
+          </h5>
+
+          <ul className="mt-1 list-disc list-inside">
+            {analysisResults[job.id].matchingQualifications.map(
+              (item) => (
+                <li key={item}>{item}</li>
+              )
+            )}
+          </ul>
+        </div>
+
+        <div>
+          <h5 className="font-semibold text-gray-900">
+            Missing Requirements
+          </h5>
+
+          <ul className="mt-1 list-disc list-inside">
+            {analysisResults[job.id].missingRequirements.map(
+              (item) => (
+                <li key={item}>{item}</li>
+              )
+            )}
+          </ul>
+        </div>
+
+        <div>
+          <h5 className="font-semibold text-gray-900">
+            Relevant Experience
+          </h5>
+
+          <ul className="mt-1 list-disc list-inside">
+            {analysisResults[job.id].relevantExperience.map(
+              (item) => (
+                <li key={item}>{item}</li>
+              )
+            )}
+          </ul>
+        </div>
+
+        <div>
+          <h5 className="font-semibold text-gray-900">
+            Potential Concerns
+          </h5>
+
+          <ul className="mt-1 list-disc list-inside">
+            {analysisResults[job.id].potentialConcerns.map(
+              (item) => (
+                <li key={item}>{item}</li>
+              )
+            )}
+          </ul>
+        </div>
+
+        <div>
+          <h5 className="font-semibold text-gray-900">
+            Suggestions
+          </h5>
+
+          <ul className="mt-1 list-disc list-inside">
+            {analysisResults[job.id].suggestions.map(
+              (item) => (
+                <li key={item}>{item}</li>
+              )
+            )}
+          </ul>
+        </div>
+      </div>
+    </div>
+  )}
+
+{analysisResults[job.id] &&
+  hiddenAnalysis[job.id] && (
+    <button
+      type="button"
+      onClick={() =>
+        setHiddenAnalysis((current) => ({
+          ...current,
+          [job.id]: false,
+        }))
+      }
+      className="mt-4 text-sm text-purple-600 hover:text-purple-800 font-medium"
+    >
+      Show Analysis
+    </button>
+  )}
                 </div>
 
                 <div className="flex gap-3">
+                  <button
+                    type="button"
+                    onClick={() =>
+                      analyzeJob(job.id)
+                    }
+                    disabled={
+                      analyzingJobId === job.id
+                    }
+                    className="text-purple-600 hover:text-purple-800 font-medium disabled:opacity-50"
+                  >
+                    {analyzingJobId === job.id
+                      ? "Analyzing..."
+                      : "Analyze"}
+                  </button>
+                    
                   <button
                     type="button"
                     onClick={() =>
@@ -270,7 +458,7 @@ function Jobs() {
                   >
                     Edit
                   </button>
-
+                  
                   <button
                     type="button"
                     onClick={() =>

@@ -32,10 +32,19 @@ export interface JobAnalysisInput {
   };
 }
 
+export interface JobAnalysisResult {
+  jobRequirements: string[];
+  matchingQualifications: string[];
+  missingRequirements: string[];
+  relevantExperience: string[];
+  potentialConcerns: string[];
+  suggestions: string[];
+}
+
 export async function analyzeJob(
   input: JobAnalysisInput,
   provider: AIProvider
-): Promise<string> {
+): Promise<JobAnalysisResult> {
   if (provider === "huggingface") {
     return analyzeWithHuggingFace(input);
   }

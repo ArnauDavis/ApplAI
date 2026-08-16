@@ -413,3 +413,41 @@ export async function deleteApplicationFromApi(
     throw new Error("Failed to delete application");
   }
 }
+
+
+// --------------------
+// API AI Functions
+// --------------------
+
+
+export interface JobAnalysis {
+  jobRequirements: string[];
+  matchingQualifications: string[];
+  missingRequirements: string[];
+  relevantExperience: string[];
+  potentialConcerns: string[];
+  suggestions: string[];
+}
+
+export async function analyzeJobWithApi(
+  profileId: string,
+  jobId: string
+): Promise<JobAnalysis> {
+  const response = await fetch(
+    `${API_URL}/ai/profiles/${profileId}/jobs/${jobId}/analyze`,
+    {
+      method: "POST",
+    }
+  );
+
+  if (!response.ok) {
+    throw new Error(
+      "Failed to analyze job."
+    );
+  }
+
+  const data: { result: JobAnalysis } =
+    await response.json();
+
+  return data.result;
+}

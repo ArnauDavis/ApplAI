@@ -1,10 +1,13 @@
 import { getProfileById } from "./profileService.ts";
-import { analyzeJob } from "../ai/aiService.ts";
+import {
+  analyzeJob,
+  type JobAnalysisResult,
+} from "../ai/aiService.ts";
 
 export async function analyzeJobForProfile(
   profileId: string,
   jobId: string
-): Promise<string> {
+): Promise<JobAnalysisResult> {
   const profile = await getProfileById(profileId);
 
   if (!profile) {
