@@ -281,6 +281,32 @@ export async function createJobToApi(
   return response.json();
 }
 
+export async function importJobFromUrlApi(
+  profileId: string,
+  url: string
+): Promise<Job> {
+  const response = await fetch(
+    `${API_URL}/profiles/${profileId}/jobs/import`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        url,
+      }),
+    }
+  );
+
+  if (!response.ok) {
+    throw new Error(
+      "Failed to import job from URL."
+    );
+  }
+
+  return response.json();
+}
+
 export async function updateJobToApi(
   jobId: string,
   job: {

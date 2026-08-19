@@ -7,6 +7,7 @@ import {
   updateJobToApi,
   deleteJobFromApi,
   analyzeJobWithApi,
+  importJobFromUrlApi,
   type JobAnalysis,
 } from "../services/storageService";
 import type { Job } from "../types/index";
@@ -34,6 +35,12 @@ function Jobs() {
   
   const [analyzingJobId, setAnalyzingJobId] =
     useState<string | null>(null);
+  
+  const [importUrl, setImportUrl] =
+    useState("");
+
+  const [importingJob, setImportingJob] =
+    useState(false);
 
   useEffect(() => {
     async function loadJobs() {
@@ -214,6 +221,47 @@ function Jobs() {
     }
   }
 
+  async function importJob() {
+    if (!profileId) {
+      setError("No profile is available.");
+      return;
+    }
+
+    if (!importUrl.trim()) {
+      setError("Please enter a job posting URL.");
+      return;
+    }
+
+    try {
+      setImportingJob(true);
+      setError(null);
+
+      const importedJob =
+        await importJobFromUrlApi(
+          profileId,
+          importUrl.trim()
+        );
+
+      setJobs((currentJobs) => [
+        ...currentJobs,
+        importedJob,
+      ]);
+
+      setImportUrl("");
+    } catch (error) {
+      console.error(
+        "Failed to import job:",
+        error
+      );
+
+      setError(
+        "Unable to import job from URL."
+      );
+    } finally {
+      setImportingJob(false);
+    }
+  }
+
   if (loading) {
     return (
       <div>
@@ -245,6 +293,61 @@ function Jobs() {
       )}
 
       <div className="mt-6">
+        <div className="mt-6">
+          <div className="bg-white p-6 rounded-lg shadow">
+            <h3 className="text-lg font-semibold">
+              Import Job From URL
+            </h3>
+
+            <p className="mt-1 text-sm text-gray-600">
+              Paste a job posting URL to automatically
+              import the position.
+            </p>
+
+            <div className="mt-4 flex gap-3">
+              <input
+                type="url"
+                value={importUrl}
+                onChange={(event) =>
+                  setImportUrl(event.target.value)
+                }
+                placeholder="https://example.com/job-posting"
+                className="flex-1 border border-gray-300 rounded px-3 py-2"
+                disabled={importingJob}
+              />
+
+              <button
+                type="button"
+                onClick={importJob}
+                disabled={importingJob}
+                className="bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700 disabled:opacity-50"
+              >
+                {importingJob
+                  ? "Importing..."
+                  : "Import Job"}
+              </button>
+            </div>
+          </div>
+                
+          {editingJob ? (
+            <JobForm
+              job={editingJob}
+              onSave={(job) =>
+                updateJob(
+                  editingJob.id,
+                  job
+                )
+              }
+              onCancel={() =>
+                setEditingJob(null)
+              }
+            />
+          ) : (
+            <JobForm
+              onSave={addJob}
+            />
+          )}
+        </div>
         {editingJob ? (
           <JobForm
             job={editingJob}

@@ -44,6 +44,10 @@ import {
   deleteApplication,
 } from "../services/applicationService.ts";
 
+import {
+  importAndCreateJob,
+} from "../services/jobImportService.ts";
+
 const router = Router();
 
 
@@ -221,6 +225,29 @@ router.delete("/projects/:id", async (req, res) => {
 // --------------------
 // Job Routes
 // --------------------
+
+router.post("/:profileId/jobs/import", async (req, res, next) => {
+  try {
+    const { url } = req.body;
+
+    if (typeof url !== "string" || url.trim() === "") {
+      res.status(400).json({
+        message: "A job posting URL is required.",
+      });
+      return;
+    }
+
+    const job = await importAndCreateJob(
+      req.params.profileId,
+      url.trim()
+    );
+
+    res.status(201).json(job);
+  } catch (error) {
+    next(error);
+  }
+});
+
 
 router.post("/:profileId/jobs", async (req, res) => {
   const job = await createJob(

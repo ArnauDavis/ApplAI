@@ -2,7 +2,7 @@
 
 ## Project Status
 
-**Current Phase:** Core frontend-to-backend integration complete → Dashboard API integration next
+**Current Phase:** Job URL import complete → Cover letter generation and storage next
 
 **Project Type:** Learning project + potential real product
 
@@ -1006,12 +1006,32 @@ These issues will be addressed after the structured response contract is complet
 
 Next steps:
 
-⏳ Update the AI service to return a structured analysis object.
-⏳ Update the API endpoint to return the structured object directly.
-⏳ Update the frontend to display structured analysis sections.
-⏳ Improve prompt rules and AI validation.
-⏳ Add stronger validation for AI-generated responses.
-⏳ Add Hugging Face support.
+⏳ Review Prisma schema for cover letter storage.
+
+⏳ Add cover letter generation using the imported job and candidate profile.
+
+⏳ Add backend API endpoint for generating a cover letter.
+
+⏳ Add frontend workflow for generating and displaying the cover letter.
+
+⏳ Allow the user to review/edit the generated cover letter before using it.
+
+⏳ Test the complete job URL → import → save → analyze → cover letter workflow.
+
+
+Completed:
+
+Added job posting URL import functionality.
+Implemented JSON-LD extraction with Open Graph fallback.
+Successfully tested against a real Paylocity job posting.
+Imported job data is now appearing correctly on the Jobs page.
+TypeScript compilation passes.
+
+Next:
+
+Review the Prisma schema.
+Add storage for generated cover letters if needed.
+Build the job URL → saved job → tailored cover letter workflow, one file at a time.
 
 
 ## current file structure
@@ -1049,7 +1069,6 @@ AI-Job-Search-Assistant/
 │       │   └── Applications.tsx
 │       │
 │       ├── data/
-│       │   
 │       │
 │       ├── services/
 │       │   └── storageService.ts
@@ -1084,6 +1103,7 @@ AI-Job-Search-Assistant/
         │   ├── projectService.ts
         │   ├── jobService.ts
         │   ├── jobAnalysisService.ts
+        │   ├── jobImportService.ts
         │   └── applicationService.ts
         │
         ├── lib/
@@ -1091,5 +1111,7 @@ AI-Job-Search-Assistant/
         │
         ├── types/
         │   └── index.ts
+        │
+        ├── testJobImport.ts
         │
         └── server.ts
