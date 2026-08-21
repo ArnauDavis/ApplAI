@@ -2,7 +2,7 @@
 
 ## Project Status
 
-**Current Phase:** Job URL import complete → Cover letter generation and storage next
+**Current Phase:** AI job analysis and cover letter generation complete → Cover letter PDF workflow next
 
 **Project Type:** Learning project + potential real product
 
@@ -1026,13 +1026,50 @@ Implemented JSON-LD extraction with Open Graph fallback.
 Successfully tested against a real Paylocity job posting.
 Imported job data is now appearing correctly on the Jobs page.
 TypeScript compilation passes.
+- Added `coverLetter` field to the Job database model.
+- Successfully migrated the database with Prisma.
+- Added AI-powered cover letter generation using Ollama.
+- Added strict factual rules to prevent unsupported candidate claims.
+- Integrated job analysis with cover letter generation.
+- Cover letters are now saved directly to the corresponding Job record.
+- Verified generated cover letters through the API.
+- Added cover letter PDF generation and verified that the PDF is successfully produced.
 
-Next:
+### Next Steps
+⏳ Add frontend support for generating and downloading the cover letter PDF.
+⏳ Add saved cover letter display/download controls to the Jobs page.
+⏳ Verify the complete job → analysis → cover letter → PDF workflow.
 
-Review the Prisma schema.
-Add storage for generated cover letters if needed.
-Build the job URL → saved job → tailored cover letter workflow, one file at a time.
 
+
+Current backend workflow
+                    ┌─────────────────┐
+                    │    Job Posting  │
+                    └────────┬────────┘
+                             ↓
+                    ┌─────────────────┐
+                    │ Job Analysis     │
+                    │ AI / Ollama      │
+                    └────────┬────────┘
+                             ↓
+                    ┌─────────────────┐
+                    │ Cover Letter     │
+                    │ Generation       │
+                    └────────┬────────┘
+                             ↓
+                    ┌─────────────────┐
+                    │ Save to Job      │
+                    │ coverLetter      │
+                    └────────┬────────┘
+                             ↓
+                    ┌─────────────────┐
+                    │ PDF Generation   │
+                    │ coverLetterPdf   │
+                    └────────┬────────┘
+                             ↓
+                    ┌─────────────────┐
+                    │ Download PDF     │
+                    └─────────────────┘
 
 ## current file structure
 
@@ -1078,6 +1115,7 @@ AI-Job-Search-Assistant/
 │
 └── backend/
     ├── package.json
+    │
     ├── prisma/
     │   ├── schema.prisma
     │   └── migrations/
@@ -1104,6 +1142,8 @@ AI-Job-Search-Assistant/
         │   ├── jobService.ts
         │   ├── jobAnalysisService.ts
         │   ├── jobImportService.ts
+        │   ├── coverLetterService.ts
+        │   ├── coverLetterPdfService.ts
         │   └── applicationService.ts
         │
         ├── lib/

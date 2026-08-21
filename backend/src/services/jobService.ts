@@ -25,6 +25,7 @@ export async function createJob(
     company: job.company,
     description: job.description,
     url: job.url,
+    coverLetter: job.coverLetter,
   };
 }
 
@@ -41,6 +42,7 @@ export async function getJobs(profileId: string) {
     company: job.company,
     description: job.description,
     url: job.url,
+    coverLetter: job.coverLetter,
   }));
 }
 
@@ -82,6 +84,7 @@ export async function updateJob(
     company: job.company,
     description: job.description,
     url: job.url,
+    coverLetter: job.coverLetter,
   };
 }
 
