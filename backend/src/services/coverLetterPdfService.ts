@@ -5,18 +5,13 @@ export function generateCoverLetterPdf(
 ): PDFKit.PDFDocument {
   const document = new PDFDocument({
     size: "LETTER",
-    margins: {
-      top: 72,
-      bottom: 72,
-      left: 72,
-      right: 72,
-    },
+    margin: 72,
   });
 
   document
     .font("Times-Roman")
     .fontSize(12)
-    .lineGap(6);
+    .fillColor("black");
 
   const paragraphs = coverLetter
     .split(/\n\s*\n/)
@@ -26,6 +21,7 @@ export function generateCoverLetterPdf(
   paragraphs.forEach((paragraph, index) => {
     document.text(paragraph, {
       align: "left",
+      lineGap: 4,
     });
 
     if (index < paragraphs.length - 1) {

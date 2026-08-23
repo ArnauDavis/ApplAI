@@ -477,3 +477,51 @@ export async function analyzeJobWithApi(
 
   return data.result;
 }
+
+
+// --------------------
+// API Cover Letter Functions
+// --------------------
+
+export async function generateCoverLetterWithApi(
+  profileId: string,
+  jobId: string
+): Promise<string> {
+  const response = await fetch(
+    `${API_URL}/ai/profiles/${profileId}/jobs/${jobId}/cover-letter`,
+    {
+      method: "POST",
+    }
+  );
+
+  if (!response.ok) {
+    throw new Error(
+      "Failed to generate cover letter."
+    );
+  }
+
+  const data: { coverLetter: string } =
+    await response.json();
+
+  return data.coverLetter;
+}
+
+export async function downloadCoverLetterPdfFromApi(
+  profileId: string,
+  jobId: string
+): Promise<Blob> {
+  const response = await fetch(
+    `${API_URL}/ai/profiles/${profileId}/jobs/${jobId}/cover-letter/pdf`,
+    {
+      method: "GET",
+    }
+  );
+
+  if (!response.ok) {
+    throw new Error(
+      "Failed to download cover letter PDF."
+    );
+  }
+
+  return response.blob();
+}

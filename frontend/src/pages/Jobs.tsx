@@ -8,6 +8,8 @@ import {
   deleteJobFromApi,
   analyzeJobWithApi,
   importJobFromUrlApi,
+  generateCoverLetterWithApi,
+  downloadCoverLetterPdfFromApi,
   type JobAnalysis,
 } from "../services/storageService";
 import type { Job } from "../types/index";
@@ -43,6 +45,12 @@ function Jobs() {
     useState(false);
 
   const [downloadingCoverLetterJobId, setDownloadingCoverLetterJobId] =
+    useState<string | null>(null);
+
+  const [coverLetters, setCoverLetters] =
+    useState<Record<string, string>>({});
+
+  const [generatingCoverLetterJobId, setGeneratingCoverLetterJobId] =
     useState<string | null>(null);
 
   useEffect(() => {
@@ -219,6 +227,85 @@ function Jobs() {
       );
     } finally {
       setAnalyzingJobId(null);
+    }
+  }
+
+  async function generateCoverLetter(
+    jobId: string
+  ) {
+    if (!profileId) {
+      setError("No profile is available.");
+      return;
+    }
+
+    try {
+      setGeneratingCoverLetterJobId(jobId);
+      setError(null);
+
+      const coverLetter =
+        await generateCoverLetterWithApi(
+          profileId,
+          jobId
+        );
+
+      setCoverLetters((currentLetters) => ({
+        ...currentLetters,
+        [jobId]: coverLetter,
+      }));
+    } catch (error) {
+      console.error(
+        "Failed to generate cover letter:",
+        error
+      );
+
+      setError(
+        "Unable to generate cover letter."
+      );
+    } finally {
+      setGeneratingCoverLetterJobId(null);
+    }
+  }
+
+  async function downloadCoverLetterPdf(
+    jobId: string
+  ) {
+    if (!profileId) {
+      setError("No profile is available.");
+      return;
+    }
+
+    try {
+      setError(null);
+
+      const pdf =
+        await downloadCoverLetterPdfFromApi(
+          profileId,
+          jobId
+        );
+
+      const url = window.URL.createObjectURL(pdf);
+
+      const link = document.createElement("a");
+
+      link.href = url;
+      link.download = "cover-letter.pdf";
+
+      document.body.appendChild(link);
+
+      link.click();
+
+      link.remove();
+
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error(
+        "Failed to download cover letter PDF:",
+        error
+      );
+
+      setError(
+        "Unable to download cover letter PDF."
+      );
     }
   }
 
@@ -642,6 +729,33 @@ function Jobs() {
                       : "Analyze"}
                   </button>
 
+                  <button
+                    type="button"
+                    onClick={() =>
+                      generateCoverLetter(job.id)
+                    }
+                    disabled={
+                      generatingCoverLetterJobId === job.id
+                    }
+                    className="text-green-600 hover:text-green-800 font-medium disabled:opacity-50"
+                  >
+                    {generatingCoverLetterJobId === job.id
+                      ? "Generating..."
+                      : "Cover Letter"}
+                  </button>
+                    
+                  {coverLetters[job.id] && (
+                    <button
+                      type="button"
+                      onClick={() =>
+                        downloadCoverLetterPdf(job.id)
+                      }
+                      className="text-indigo-600 hover:text-indigo-800 font-medium"
+                    >
+                      Download PDF
+                    </button>
+                  )}
+                  
                   <button
                     type="button"
                     onClick={() =>
