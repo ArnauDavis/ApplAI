@@ -1079,79 +1079,85 @@ AI-Job-Search-Assistant/
 ├── README.md
 │
 ├── frontend/
-│   ├── package.json
-│   ├── .env
-│   ├── index.html
-│   │
-│   └── src/
-│       ├── App.tsx
-│       ├── main.tsx
-│       │
-│       ├── components/
-│       │   ├── Header.tsx
-│       │   ├── Navigation.tsx
-│       │   ├── ProfileForm.tsx
-│       │   ├── ExperienceForm.tsx
-│       │   ├── ExperienceSection.tsx
-│       │   ├── ProjectForm.tsx
-│       │   ├── ProjectSection.tsx
-│       │   ├── JobForm.tsx
-│       │   ├── ApplicationForm.tsx
-│       │   └── ApplicationStatusSelect.tsx
-│       │
-│       ├── pages/
-│       │   ├── Dashboard.tsx
-│       │   ├── Profile.tsx
-│       │   ├── Jobs.tsx
-│       │   └── Applications.tsx
-│       │
-│       ├── data/
-│       │
-│       ├── services/
-│       │   └── storageService.ts
-│       │
-│       └── types/
-│           └── index.ts
+│ ├── package.json
+│ ├── .env
+│ ├── index.html
+│ │
+│ └── src/
+│ ├── App.tsx
+│ ├── main.tsx
+│ │
+│ ├── components/
+│ │ ├── Header.tsx
+│ │ ├── Navigation.tsx
+│ │ ├── ProfileForm.tsx
+│ │ ├── ExperienceForm.tsx
+│ │ ├── ExperienceSection.tsx
+│ │ ├── ProjectForm.tsx
+│ │ ├── ProjectSection.tsx
+│ │ ├── JobForm.tsx
+│ │ ├── ApplicationForm.tsx
+│ │ └── ApplicationStatusSelect.tsx
+│ │
+│ ├── pages/
+│ │ ├── Dashboard.tsx
+│ │ ├── Profile.tsx
+│ │ ├── Jobs.tsx
+│ │ └── Applications.tsx
+│ │
+│ ├── data/
+│ │
+│ ├── services/
+│ │ ├── storageService.ts
+│ │ ├── profileService.ts
+│ │ ├── experienceService.ts
+│ │ ├── projectService.ts
+│ │ ├── jobService.ts
+│ │ ├── applicationService.ts
+│ │ └── aiService.ts
+│ │
+│ └── types/
+│ └── index.ts
 │
 └── backend/
-    ├── package.json
-    │
-    ├── prisma/
-    │   ├── schema.prisma
-    │   └── migrations/
-    │
-    └── src/
-        ├── ai/
-        │   ├── aiService.ts
-        │   ├── huggingFaceService.ts
-        │   └── ollamaService.ts
-        │
-        ├── routes/
-        │   ├── index.ts
-        │   ├── profileRoutes.ts
-        │   └── aiRoutes.ts
-        │
-        ├── data/
-        │   └── profileStore.ts
-        │
-        ├── services/
-        │   ├── profileService.ts
-        │   ├── experienceService.ts
-        │   ├── educationService.ts
-        │   ├── projectService.ts
-        │   ├── jobService.ts
-        │   ├── jobAnalysisService.ts
-        │   ├── jobImportService.ts
-        │   ├── coverLetterService.ts
-        │   ├── coverLetterPdfService.ts
-        │   └── applicationService.ts
-        │
-        ├── lib/
-        │   └── prisma.ts
-        │
-        ├── types/
-        │   └── index.ts
-        │
-        ├── testJobImport.ts
-        │
-        └── server.ts
+├── package.json
+│
+├── prisma/
+│ ├── schema.prisma
+│ └── migrations/
+│
+└── src/
+├── ai/
+│ ├── aiService.ts
+│ ├── huggingFaceService.ts
+│ └── ollamaService.ts
+│
+├── routes/
+│ ├── index.ts
+│ ├── profileRoutes.ts
+│ └── aiRoutes.ts
+│
+├── data/
+│ └── profileStore.ts
+│
+├── services/
+│ ├── profileService.ts
+│ ├── experienceService.ts
+│ ├── educationService.ts
+│ ├── projectService.ts
+│ ├── jobService.ts
+│ ├── jobAnalysisService.ts
+│ ├── jobImportService.ts
+│ ├── coverLetterService.ts
+│ ├── coverLetterPdfService.ts
+│ └── applicationService.ts
+│
+├── lib/
+│ └── prisma.ts
+│
+├── types/
+│ └── index.ts
+│
+├── testJobImport.ts
+│
+└── server.ts
