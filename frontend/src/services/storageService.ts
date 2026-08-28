@@ -67,3 +67,5 @@ export {
   generateCoverLetterWithApi,
   downloadCoverLetterPdfFromApi,
 } from "./aiService";
+
+export type { JobAnalysis } from "./aiService";

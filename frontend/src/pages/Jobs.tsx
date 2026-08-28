@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import JobForm from "../components/JobForm";
 import {
   getProfilesFromApi,
   getJobsFromApi,
@@ -13,6 +12,11 @@ import {
   type JobAnalysis,
 } from "../services/storageService";
 import type { Job } from "../types/index";
+
+import JobPageHeader from "../components/jobs/JobPageHeader";
+import JobImportForm from "../components/jobs/JobImportForm";
+import JobFormSection from "../components/jobs/JobFormSection";
+import JobList from "../components/jobs/JobList";
 
 function Jobs() {
   const [jobs, setJobs] = useState<Job[]>([]);
@@ -38,20 +42,21 @@ function Jobs() {
   const [analyzingJobId, setAnalyzingJobId] =
     useState<string | null>(null);
 
-  const [importUrl, setImportUrl] =
-    useState("");
-
   const [importingJob, setImportingJob] =
     useState(false);
 
-  const [downloadingCoverLetterJobId, setDownloadingCoverLetterJobId] =
-    useState<string | null>(null);
+  const [
+    downloadingCoverLetterJobId,
+    setDownloadingCoverLetterJobId,
+  ] = useState<string | null>(null);
 
   const [coverLetters, setCoverLetters] =
     useState<Record<string, string>>({});
 
-  const [generatingCoverLetterJobId, setGeneratingCoverLetterJobId] =
-    useState<string | null>(null);
+  const [
+    generatingCoverLetterJobId,
+    setGeneratingCoverLetterJobId,
+  ] = useState<string | null>(null);
 
   useEffect(() => {
     async function loadJobs() {
@@ -197,7 +202,9 @@ function Jobs() {
     }
   }
 
-  async function analyzeJob(jobId: string) {
+  async function analyzeJob(
+    jobId: string
+  ) {
     if (!profileId) {
       setError("No profile is available.");
       return;
@@ -207,15 +214,18 @@ function Jobs() {
       setAnalyzingJobId(jobId);
       setError(null);
 
-      const result = await analyzeJobWithApi(
-        profileId,
-        jobId
-      );
+      const result =
+        await analyzeJobWithApi(
+          profileId,
+          jobId
+        );
 
-      setAnalysisResults((currentResults) => ({
-        ...currentResults,
-        [jobId]: result,
-      }));
+      setAnalysisResults(
+        (currentResults) => ({
+          ...currentResults,
+          [jobId]: result,
+        })
+      );
     } catch (error) {
       console.error(
         "Failed to analyze job:",
@@ -248,10 +258,12 @@ function Jobs() {
           jobId
         );
 
-      setCoverLetters((currentLetters) => ({
-        ...currentLetters,
-        [jobId]: coverLetter,
-      }));
+      setCoverLetters(
+        (currentLetters) => ({
+          ...currentLetters,
+          [jobId]: coverLetter,
+        })
+      );
     } catch (error) {
       console.error(
         "Failed to generate cover letter:",
@@ -275,6 +287,7 @@ function Jobs() {
     }
 
     try {
+      setDownloadingCoverLetterJobId(jobId);
       setError(null);
 
       const pdf =
@@ -283,9 +296,11 @@ function Jobs() {
           jobId
         );
 
-      const url = window.URL.createObjectURL(pdf);
+      const url =
+        window.URL.createObjectURL(pdf);
 
-      const link = document.createElement("a");
+      const link =
+        document.createElement("a");
 
       link.href = url;
       link.download = "cover-letter.pdf";
@@ -306,17 +321,23 @@ function Jobs() {
       setError(
         "Unable to download cover letter PDF."
       );
+    } finally {
+      setDownloadingCoverLetterJobId(null);
     }
   }
 
-  async function importJob() {
+  async function importJob(
+    url: string
+  ) {
     if (!profileId) {
       setError("No profile is available.");
       return;
     }
 
-    if (!importUrl.trim()) {
-      setError("Please enter a job posting URL.");
+    if (!url.trim()) {
+      setError(
+        "Please enter a job posting URL."
+      );
       return;
     }
 
@@ -327,15 +348,13 @@ function Jobs() {
       const importedJob =
         await importJobFromUrlApi(
           profileId,
-          importUrl.trim()
+          url.trim()
         );
 
       setJobs((currentJobs) => [
         ...currentJobs,
         importedJob,
       ]);
-
-      setImportUrl("");
     } catch (error) {
       console.error(
         "Failed to import job:",
@@ -345,71 +364,17 @@ function Jobs() {
       setError(
         "Unable to import job from URL."
       );
+
+      throw error;
     } finally {
       setImportingJob(false);
-    }
-  }
-
-  async function downloadCoverLetter(
-    jobId: string
-  ) {
-    if (!profileId) {
-      setError("No profile is available.");
-      return;
-    }
-
-    try {
-      setDownloadingCoverLetterJobId(jobId);
-      setError(null);
-
-      const response = await fetch(
-        `http://localhost:3000/ai/profiles/${profileId}/jobs/${jobId}/cover-letter/pdf`
-      );
-
-      if (!response.ok) {
-        throw new Error(
-          `Failed to download cover letter: ${response.status}`
-        );
-      }
-
-      const blob = await response.blob();
-
-      const downloadUrl =
-        window.URL.createObjectURL(blob);
-
-      const link =
-        document.createElement("a");
-
-      link.href = downloadUrl;
-      link.download = "cover-letter.pdf";
-
-      document.body.appendChild(link);
-      link.click();
-      link.remove();
-
-      window.URL.revokeObjectURL(
-        downloadUrl
-      );
-    } catch (error) {
-      console.error(
-        "Failed to download cover letter:",
-        error
-      );
-
-      setError(
-        "Unable to download cover letter PDF."
-      );
-    } finally {
-      setDownloadingCoverLetterJobId(null);
     }
   }
 
   if (loading) {
     return (
       <div>
-        <h2 className="text-2xl font-semibold">
-          Jobs
-        </h2>
+        <JobPageHeader />
 
         <p className="mt-6 text-gray-600">
           Loading jobs...
@@ -420,13 +385,7 @@ function Jobs() {
 
   return (
     <div>
-      <h2 className="text-2xl font-semibold">
-        Jobs
-      </h2>
-
-      <p className="mt-2 text-gray-600">
-        Manage and analyze job opportunities.
-      </p>
+      <JobPageHeader />
 
       {error && (
         <div className="mt-4 bg-red-100 text-red-700 p-4 rounded">
@@ -435,351 +394,70 @@ function Jobs() {
       )}
 
       <div className="mt-6">
-        <div className="bg-white p-6 rounded-lg shadow">
-          <h3 className="text-lg font-semibold">
-            Import Job From URL
-          </h3>
+        <JobImportForm
+          onImport={importJob}
+          importingJob={importingJob}
+        />
 
-          <p className="mt-1 text-sm text-gray-600">
-            Paste a job posting URL to automatically
-            import the position.
-          </p>
-
-          <div className="mt-4 flex gap-3">
-            <input
-              type="url"
-              value={importUrl}
-              onChange={(event) =>
-                setImportUrl(event.target.value)
-              }
-              placeholder="https://example.com/job-posting"
-              className="flex-1 border border-gray-300 rounded px-3 py-2"
-              disabled={importingJob}
-            />
-
-            <button
-              type="button"
-              onClick={importJob}
-              disabled={importingJob}
-              className="bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700 disabled:opacity-50"
-            >
-              {importingJob
-                ? "Importing..."
-                : "Import Job"}
-            </button>
-          </div>
-        </div>
-
-        {editingJob ? (
-          <JobForm
-            job={editingJob}
-            onSave={(job) =>
-              updateJob(
-                editingJob.id,
-                job
-              )
-            }
-            onCancel={() =>
-              setEditingJob(null)
-            }
-          />
-        ) : (
-          <JobForm
-            onSave={addJob}
-          />
-        )}
+        <JobFormSection
+          editingJob={editingJob}
+          onSave={
+            editingJob
+              ? (job) =>
+                  updateJob(
+                    editingJob.id,
+                    job
+                  )
+              : addJob
+          }
+          onCancel={() =>
+            setEditingJob(null)
+          }
+        />
       </div>
 
-      <div className="mt-6 space-y-4">
-        {jobs.length === 0 ? (
-          <div className="bg-white p-6 rounded-lg shadow">
-            <p className="text-gray-600">
-              No jobs added yet.
-            </p>
-          </div>
-        ) : (
-          jobs.map((job) => (
-            <div
-              key={job.id}
-              className="bg-white p-6 rounded-lg shadow"
-            >
-              <div className="flex justify-between items-start gap-4">
-                <div className="flex-1">
-                  <h3 className="text-lg font-semibold">
-                    {job.title}
-                  </h3>
-
-                  <p className="text-gray-600">
-                    {job.company}
-                  </p>
-
-                  <p className="mt-3">
-                    {job.description}
-                  </p>
-
-                  {job.url && (
-                    <a
-                      href={job.url}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="mt-3 inline-block text-blue-600 hover:underline"
-                    >
-                      View Job
-                    </a>
-                  )}
-
-                  {job.coverLetter && (
-                    <div className="mt-4">
-                      <button
-                        type="button"
-                        onClick={() =>
-                          downloadCoverLetter(
-                            job.id
-                          )
-                        }
-                        disabled={
-                          downloadingCoverLetterJobId ===
-                          job.id
-                        }
-                        className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 disabled:opacity-50"
-                      >
-                        {downloadingCoverLetterJobId ===
-                        job.id
-                          ? "Downloading..."
-                          : "Download Cover Letter PDF"}
-                      </button>
-                    </div>
-                  )}
-
-                  {analysisResults[job.id] &&
-                    !hiddenAnalysis[job.id] && (
-                      <div className="mt-4 p-4 bg-purple-50 border border-purple-200 rounded-lg">
-                        <h4 className="font-semibold text-purple-900">
-                          AI Job Analysis
-                        </h4>
-
-                        <button
-                          type="button"
-                          onClick={() =>
-                            setHiddenAnalysis(
-                              (current) => ({
-                                ...current,
-                                [job.id]: true,
-                              })
-                            )
-                          }
-                          className="mt-2 text-sm text-purple-600 hover:text-purple-800"
-                        >
-                          Hide Analysis
-                        </button>
-
-                        <div className="mt-3 space-y-4 text-sm text-gray-700">
-                          <div>
-                            <h5 className="font-semibold text-gray-900">
-                              Job Requirements
-                            </h5>
-
-                            {analysisResults[
-                              job.id
-                            ].jobRequirements
-                              .length > 0 ? (
-                              <ul className="mt-1 list-disc list-inside">
-                                {analysisResults[
-                                  job.id
-                                ].jobRequirements.map(
-                                  (item) => (
-                                    <li key={item}>
-                                      {item}
-                                    </li>
-                                  )
-                                )}
-                              </ul>
-                            ) : (
-                              <p className="mt-1 text-gray-500">
-                                No specific requirements identified.
-                              </p>
-                            )}
-                          </div>
-
-                          <div>
-                            <h5 className="font-semibold text-gray-900">
-                              Matching Qualifications
-                            </h5>
-
-                            <ul className="mt-1 list-disc list-inside">
-                              {analysisResults[
-                                job.id
-                              ].matchingQualifications.map(
-                                (item) => (
-                                  <li key={item}>
-                                    {item}
-                                  </li>
-                                )
-                              )}
-                            </ul>
-                          </div>
-
-                          <div>
-                            <h5 className="font-semibold text-gray-900">
-                              Missing Requirements
-                            </h5>
-
-                            <ul className="mt-1 list-disc list-inside">
-                              {analysisResults[
-                                job.id
-                              ].missingRequirements.map(
-                                (item) => (
-                                  <li key={item}>
-                                    {item}
-                                  </li>
-                                )
-                              )}
-                            </ul>
-                          </div>
-
-                          <div>
-                            <h5 className="font-semibold text-gray-900">
-                              Relevant Experience
-                            </h5>
-
-                            <ul className="mt-1 list-disc list-inside">
-                              {analysisResults[
-                                job.id
-                              ].relevantExperience.map(
-                                (item) => (
-                                  <li key={item}>
-                                    {item}
-                                  </li>
-                                )
-                              )}
-                            </ul>
-                          </div>
-
-                          <div>
-                            <h5 className="font-semibold text-gray-900">
-                              Potential Concerns
-                            </h5>
-
-                            <ul className="mt-1 list-disc list-inside">
-                              {analysisResults[
-                                job.id
-                              ].potentialConcerns.map(
-                                (item) => (
-                                  <li key={item}>
-                                    {item}
-                                  </li>
-                                )
-                              )}
-                            </ul>
-                          </div>
-
-                          <div>
-                            <h5 className="font-semibold text-gray-900">
-                              Suggestions
-                            </h5>
-
-                            <ul className="mt-1 list-disc list-inside">
-                              {analysisResults[
-                                job.id
-                              ].suggestions.map(
-                                (item) => (
-                                  <li key={item}>
-                                    {item}
-                                  </li>
-                                )
-                              )}
-                            </ul>
-                          </div>
-                        </div>
-                      </div>
-                    )}
-
-                  {analysisResults[job.id] &&
-                    hiddenAnalysis[job.id] && (
-                      <button
-                        type="button"
-                        onClick={() =>
-                          setHiddenAnalysis(
-                            (current) => ({
-                              ...current,
-                              [job.id]: false,
-                            })
-                          )
-                        }
-                        className="mt-4 text-sm text-purple-600 hover:text-purple-800 font-medium"
-                      >
-                        Show Analysis
-                      </button>
-                    )}
-                </div>
-
-                <div className="flex gap-3">
-                  <button
-                    type="button"
-                    onClick={() =>
-                      analyzeJob(job.id)
-                    }
-                    disabled={
-                      analyzingJobId === job.id
-                    }
-                    className="text-purple-600 hover:text-purple-800 font-medium disabled:opacity-50"
-                  >
-                    {analyzingJobId === job.id
-                      ? "Analyzing..."
-                      : "Analyze"}
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={() =>
-                      generateCoverLetter(job.id)
-                    }
-                    disabled={
-                      generatingCoverLetterJobId === job.id
-                    }
-                    className="text-green-600 hover:text-green-800 font-medium disabled:opacity-50"
-                  >
-                    {generatingCoverLetterJobId === job.id
-                      ? "Generating..."
-                      : "Cover Letter"}
-                  </button>
-                    
-                  {coverLetters[job.id] && (
-                    <button
-                      type="button"
-                      onClick={() =>
-                        downloadCoverLetterPdf(job.id)
-                      }
-                      className="text-indigo-600 hover:text-indigo-800 font-medium"
-                    >
-                      Download PDF
-                    </button>
-                  )}
-                  
-                  <button
-                    type="button"
-                    onClick={() =>
-                      setEditingJob(job)
-                    }
-                    className="text-blue-600 hover:text-blue-800 font-medium"
-                  >
-                    Edit
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={() =>
-                      deleteJob(job.id)
-                    }
-                    className="text-red-600 hover:text-red-800 font-medium"
-                  >
-                    Delete
-                  </button>
-                </div>
-              </div>
-            </div>
-          ))
-        )}
+      <div className="mt-6">
+        <JobList
+          jobs={jobs}
+          analysisResults={analysisResults}
+          hiddenAnalysis={hiddenAnalysis}
+          analyzingJobId={analyzingJobId}
+          generatingCoverLetterJobId={
+            generatingCoverLetterJobId
+          }
+          downloadingCoverLetterJobId={
+            downloadingCoverLetterJobId
+          }
+          coverLetters={coverLetters}
+          onAnalyze={analyzeJob}
+          onGenerateCoverLetter={
+            generateCoverLetter
+          }
+          onDownloadPdf={
+            downloadCoverLetterPdf
+          }
+          onEdit={setEditingJob}
+          onDelete={deleteJob}
+          onHideAnalysis={(jobId) =>
+            setHiddenAnalysis(
+              (current) => ({
+                ...current,
+                [jobId]: true,
+              })
+            )
+          }
+          onShowAnalysis={(jobId) =>
+            setHiddenAnalysis(
+              (current) => ({
+                ...current,
+                [jobId]: false,
+              })
+            )
+          }
+          onDownloadSavedCoverLetter={
+            downloadCoverLetterPdf
+          }
+        />
       </div>
     </div>
   );
