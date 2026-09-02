@@ -20,6 +20,8 @@ export async function importJobFromUrl(
   }
 
   const html = await response.text();
+  console.log("Job import URL:", url);
+  console.log("HTML length:", html.length);
 
   const $ = cheerio.load(html);
 
@@ -29,6 +31,11 @@ export async function importJobFromUrl(
 
   const jsonLdScripts =
     $('script[type="application/ld+json"]');
+
+  console.log(
+    "JSON-LD scripts found:",
+    jsonLdScripts.length
+  );
 
   for (const element of jsonLdScripts.toArray()) {
     const jsonText = $(element).text();
@@ -40,13 +47,17 @@ export async function importJobFromUrl(
         Array.isArray(data)
           ? data.find(
               (item) =>
+                item &&
                 item["@type"] === "JobPosting"
             )
-          : data["@type"] === "JobPosting"
+          : data &&
+              data["@type"] === "JobPosting"
             ? data
             : null;
 
       if (jobPosting) {
+        console.log("JSON-LD JobPosting found.");
+
         const title = jobPosting.title;
 
         const company =
@@ -60,6 +71,10 @@ export async function importJobFromUrl(
           typeof company === "string" &&
           typeof description === "string"
         ) {
+          console.log(
+            "JSON-LD extraction successful."
+          );
+
           return {
             title: title.trim(),
             company: company.trim(),
@@ -67,10 +82,15 @@ export async function importJobFromUrl(
             url,
           };
         }
+
+        console.log(
+          "JSON-LD JobPosting found, but required fields are missing."
+        );
       }
     } catch {
-      // Ignore invalid JSON-LD and continue
-      // to other extraction strategies.
+      console.log(
+        "Found JSON-LD script, but it could not be parsed."
+      );
     }
   }
 
@@ -88,6 +108,12 @@ export async function importJobFromUrl(
       .attr("content")
       ?.trim();
 
+  console.log("Open Graph title:", ogTitle);
+  console.log(
+    "Open Graph description found:",
+    Boolean(ogDescription)
+  );
+
   if (ogTitle && ogDescription) {
     const title = ogTitle
       .replace(/\s*\|\s*.*$/, "")
@@ -99,6 +125,10 @@ export async function importJobFromUrl(
       .trim();
 
     if (title && company) {
+      console.log(
+        "Open Graph extraction successful."
+      );
+
       return {
         title,
         company,
@@ -107,6 +137,10 @@ export async function importJobFromUrl(
       };
     }
   }
+
+  console.log(
+    "All current extraction strategies failed."
+  );
 
   throw new Error(
     "Unable to extract job information from this URL."

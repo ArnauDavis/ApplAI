@@ -1139,7 +1139,12 @@ AI-Job-Search-Assistant/
         ├── ai/
         │   ├── aiService.ts
         │   ├── huggingFaceService.ts
-        │   └── ollamaService.ts
+        │   ├── ollamaService.ts
+        │   │
+        │   └── prompts/
+        │       ├── index.ts
+        │       ├── jobAnalysisPrompt.ts
+        │       └── coverLetterPrompt.ts
         │
         ├── routes/
         │   ├── index.ts
@@ -1166,7 +1171,3 @@ AI-Job-Search-Assistant/
         │
         ├── types/
         │   └── index.ts
-        │
-        ├── testJobImport.ts
-        │
-        └── server.ts
