@@ -286,65 +286,132 @@ function Profile() {
 
   if (loading) {
     return (
-      <div>
-        <h2 className="text-2xl font-semibold">
-          Profile
-        </h2>
+      <div className="mx-auto max-w-7xl">
+        <div className="border-b border-line pb-6">
+          <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted">
+            Career Workspace
+          </p>
 
-        <p className="mt-6 text-gray-600">
-          Loading profile...
-        </p>
+          <h2 className="mt-2 font-display text-4xl tracking-tight text-ink sm:text-5xl">
+            Profile
+          </h2>
+
+          <p className="mt-3 text-sm text-muted">
+            Loading your profile...
+          </p>
+        </div>
       </div>
     );
   }
 
   if (!profile) {
     return (
-      <div>
-        <h2 className="text-2xl font-semibold">
-          Profile
-        </h2>
+      <div className="mx-auto max-w-7xl">
+        <div className="border-b border-line pb-6">
+          <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted">
+            Career Workspace
+          </p>
 
-        <div className="mt-6 bg-red-100 text-red-700 p-4 rounded">
-          {error ?? "No profile available."}
+          <h2 className="mt-2 font-display text-4xl tracking-tight text-ink sm:text-5xl">
+            Profile
+          </h2>
+        </div>
+
+        <div className="mt-6 border border-signal/40 bg-signal/10 px-4 py-4 text-sm">
+          <div className="flex items-start gap-3">
+            <span className="mt-1 h-2 w-2 shrink-0 rounded-full bg-signal" />
+
+            <div>
+              <p className="font-medium text-ink">
+                No profile available
+              </p>
+
+              <p className="mt-1 text-muted">
+                {error ?? "No profile available."}
+              </p>
+            </div>
+          </div>
         </div>
       </div>
     );
   }
 
   return (
-    <div>
-      <h2 className="text-2xl font-semibold">
-        Profile
-      </h2>
+    <div className="mx-auto max-w-7xl">
+      <section className="border-b border-line pb-8">
+        <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted">
+          Career Workspace
+        </p>
+
+        <h2 className="mt-2 font-display text-4xl tracking-tight text-ink sm:text-5xl">
+          Profile
+        </h2>
+
+        <p className="mt-3 max-w-2xl text-sm leading-6 text-muted sm:text-base">
+          Keep the information behind your applications
+          accurate, current, and entirely your own.
+        </p>
+      </section>
 
       {error && (
-        <div className="mt-4 bg-red-100 text-red-700 p-4 rounded">
-          {error}
+        <div className="mt-6 border border-signal/40 bg-signal/10 px-4 py-3 text-sm">
+          <div className="flex items-start gap-3">
+            <span className="mt-1 h-2 w-2 shrink-0 rounded-full bg-signal" />
+
+            <div>
+              <p className="font-medium text-ink">
+                Something needs attention
+              </p>
+
+              <p className="mt-1 text-muted">
+                {error}
+              </p>
+            </div>
+          </div>
         </div>
       )}
 
-      <div className="mt-6">
+      <div className="mt-8">
         <ProfileForm
           profile={profile}
           onSave={updateProfile}
         />
       </div>
 
-      <div className="mt-6">
+      <section className="mt-10 border-t border-line pt-8">
+        <div className="mb-5">
+          <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-muted">
+            Experience
+          </p>
+
+          <h3 className="mt-1 font-display text-2xl text-ink">
+            Work history
+          </h3>
+        </div>
+
         <ExperienceForm
           onSave={addExperience}
         />
-      </div>
 
-      <div className="mt-6">
-        <ExperienceSection
-          experiences={profile.experience}
-          onDelete={deleteExperience}
-        />
-      </div>
+        <div className="mt-6">
+          <ExperienceSection
+            experiences={profile.experience}
+            onDelete={deleteExperience}
+          />
+        </div>
+      </section>
 
-      <div className="mt-6">
+      <section className="mt-10 border-t border-line pt-8">
+        <div className="mb-5">
+          <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-muted">
+            Projects
+          </p>
+
+          <h3 className="mt-1 font-display text-2xl text-ink">
+            Work you've built
+          </h3>
+        </div>
+
         {editingProject ? (
           <ProjectForm
             project={editingProject}
@@ -363,46 +430,48 @@ function Profile() {
             onSave={addProject}
           />
         )}
-      </div>
 
-      <div className="mt-6">
-        <ProjectSection
-          projects={profile.projects}
-          onDelete={deleteProject}
-          onEdit={setEditingProject}
-        />
-      </div>
+        <div className="mt-6">
+          <ProjectSection
+            projects={profile.projects}
+            onDelete={deleteProject}
+            onEdit={setEditingProject}
+          />
+        </div>
+      </section>
 
-      <div className="mt-6 bg-white p-6 rounded-lg shadow">
-        <h3 className="text-xl font-semibold">
-          Profile
-        </h3>
+      <section className="mt-10 border-t border-line pt-8">
+        <div className="border border-line bg-whitewarm p-5 sm:p-6">
+          <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-muted">
+            Profile summary
+          </p>
 
-        <p className="mt-2">
-          {profile.name}
-        </p>
+          <h3 className="mt-2 font-display text-2xl text-ink">
+            {profile.name}
+          </h3>
 
-        <p className="mt-2 text-gray-600">
-          {profile.summary}
-        </p>
+          <p className="mt-3 max-w-3xl text-sm leading-6 text-muted">
+            {profile.summary}
+          </p>
 
-        <div className="mt-4">
-          <h4 className="font-semibold">
-            Skills
-          </h4>
+          <div className="mt-6 border-t border-line pt-5">
+            <p className="font-mono text-[10px] uppercase tracking-[0.16em] text-muted">
+              Skills
+            </p>
 
-          <div className="flex flex-wrap gap-2 mt-2">
-            {profile.skills.map((skill) => (
-              <span
-                key={skill}
-                className="bg-blue-100 text-blue-700 px-3 py-1 rounded"
-              >
-                {skill}
-              </span>
-            ))}
+            <div className="mt-3 flex flex-wrap gap-2">
+              {profile.skills.map((skill) => (
+                <span
+                  key={skill}
+                  className="border border-line bg-parchment px-3 py-1.5 text-xs text-ink"
+                >
+                  {skill}
+                </span>
+              ))}
+            </div>
           </div>
         </div>
-      </div>
+      </section>
     </div>
   );
 }

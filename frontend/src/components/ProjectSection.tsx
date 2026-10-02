@@ -12,39 +12,45 @@ function ProjectSection({
   onEdit,
 }: ProjectSectionProps) {
   return (
-    <section className="bg-white p-6 rounded-lg shadow">
-      <h3 className="text-xl font-semibold">
-        Projects
-      </h3>
+    <section className="border border-line bg-whitewarm p-5 sm:p-6">
+      <div className="border-b border-line pb-4">
+        <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-muted">
+          Portfolio
+        </p>
+
+        <h3 className="mt-1 font-display text-2xl text-ink">
+          Projects
+        </h3>
+      </div>
 
       {projects.length === 0 ? (
-        <p className="mt-4 text-gray-600">
+        <p className="mt-6 text-sm text-muted">
           No projects added yet.
         </p>
       ) : (
-        <div className="mt-4 space-y-6">
+        <div className="mt-6 divide-y divide-line">
           {projects.map((project) => (
             <div
               key={project.id}
-              className="border-b pb-6 last:border-b-0 last:pb-0"
+              className="py-6 first:pt-0 last:pb-0"
             >
-              <div className="flex justify-between items-start gap-4">
-                <div className="flex-1">
-                  <h4 className="text-lg font-semibold">
+              <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+                <div className="min-w-0">
+                  <h4 className="font-display text-xl text-ink">
                     {project.name}
                   </h4>
 
-                  <p className="mt-2 text-gray-600">
+                  <p className="mt-3 max-w-3xl text-sm leading-6 text-muted">
                     {project.description}
                   </p>
 
                   {project.technologies.length > 0 && (
-                    <div className="flex flex-wrap gap-2 mt-3">
+                    <div className="mt-4 flex flex-wrap gap-2">
                       {project.technologies.map(
                         (technology) => (
                           <span
                             key={technology}
-                            className="bg-blue-100 text-blue-700 px-3 py-1 rounded"
+                            className="border border-line bg-parchment px-2.5 py-1 font-mono text-[10px] uppercase tracking-[0.08em] text-muted"
                           >
                             {technology}
                           </span>
@@ -54,11 +60,11 @@ function ProjectSection({
                   )}
                 </div>
 
-                <div className="flex gap-3">
+                <div className="flex shrink-0 gap-4">
                   <button
                     type="button"
                     onClick={() => onEdit(project)}
-                    className="text-blue-600 hover:text-blue-800 font-medium"
+                    className="text-xs font-medium text-muted transition-colors hover:text-copper"
                   >
                     Edit
                   </button>
@@ -68,7 +74,7 @@ function ProjectSection({
                     onClick={() =>
                       onDelete(project.id)
                     }
-                    className="text-red-600 hover:text-red-800 font-medium"
+                    className="text-xs font-medium text-muted transition-colors hover:text-copper"
                   >
                     Delete
                   </button>

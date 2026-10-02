@@ -39,69 +39,87 @@ function JobCard({
   onDownloadSavedCoverLetter,
 }: JobCardProps) {
   return (
-    <div className="bg-white p-6 rounded-lg shadow">
-      <div className="flex justify-between items-start gap-4">
-        <div className="flex-1">
-          <h3 className="text-lg font-semibold">
-            {job.title}
-          </h3>
+    <article className="border border-line bg-whitewarm transition-colors duration-200">
+      <div className="p-5 sm:p-6">
+        <div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
+          <div className="min-w-0 flex-1">
+            <div className="flex items-start gap-3">
+              <span className="mt-2 h-2 w-2 shrink-0 rounded-full bg-copper" />
 
-          <p className="text-gray-600">
-            {job.company}
-          </p>
+              <div className="min-w-0">
+                <h3 className="font-display text-2xl leading-tight text-ink">
+                  {job.title}
+                </h3>
 
-          <p className="mt-3">
-            {job.description}
-          </p>
-
-          {job.url && (
-            <a
-              href={job.url}
-              target="_blank"
-              rel="noreferrer"
-              className="mt-3 inline-block text-blue-600 hover:underline"
-            >
-              View Job
-            </a>
-          )}
-
-          {job.coverLetter && (
-            <div className="mt-4">
-              <button
-                type="button"
-                onClick={onDownloadSavedCoverLetter}
-                disabled={downloadingCoverLetter}
-                className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 disabled:opacity-50"
-              >
-                {downloadingCoverLetter
-                  ? "Downloading..."
-                  : "Download Cover Letter PDF"}
-              </button>
+                <p className="mt-1 text-sm font-medium text-muted">
+                  {job.company}
+                </p>
+              </div>
             </div>
-          )}
 
-          {analysis && (
-            <JobAnalysisDisplay
-              analysis={analysis}
-              hidden={analysisHidden}
-              onHide={onHideAnalysis}
-              onShow={onShowAnalysis}
+            {job.description && (
+              <p className="mt-5 max-w-3xl text-sm leading-6 text-muted">
+                {job.description}
+              </p>
+            )}
+
+            {job.url && (
+              <a
+                href={job.url}
+                target="_blank"
+                rel="noreferrer"
+                className="mt-4 inline-flex items-center border-b border-copper pb-0.5 font-mono text-[10px] uppercase tracking-[0.14em] text-copper transition-colors hover:border-copper-dark hover:text-copper-dark"
+              >
+                View job posting
+              </a>
+            )}
+
+            {hasGeneratedCoverLetter && (
+              <div className="mt-5 border-t border-line pt-4">
+                <p className="font-mono text-[9px] uppercase tracking-[0.16em] text-muted">
+                  Application material
+                </p>
+
+                <button
+                  type="button"
+                  onClick={onDownloadSavedCoverLetter}
+                  disabled={downloadingCoverLetter}
+                  className="mt-2 border border-line bg-parchment px-3 py-2 text-xs font-medium text-ink transition-colors duration-150 hover:border-copper hover:text-copper disabled:cursor-not-allowed disabled:opacity-50"
+                >
+                  {downloadingCoverLetter
+                    ? "Downloading..."
+                    : "Download Cover Letter PDF"}
+                </button>
+              </div>
+            )}
+
+            {analysis && (
+              <div className="mt-6 border-t border-line pt-6">
+                <JobAnalysisDisplay
+                  analysis={analysis}
+                  hidden={analysisHidden}
+                  onHide={onHideAnalysis}
+                  onShow={onShowAnalysis}
+                />
+              </div>
+            )}
+          </div>
+
+          <div className="shrink-0 lg:w-48">
+            <JobActions
+              analyzing={analyzing}
+              generatingCoverLetter={generatingCoverLetter}
+              hasCoverLetter={hasGeneratedCoverLetter}
+              onAnalyze={onAnalyze}
+              onGenerateCoverLetter={onGenerateCoverLetter}
+              onDownloadPdf={onDownloadPdf}
+              onEdit={onEdit}
+              onDelete={onDelete}
             />
-          )}
+          </div>
         </div>
-
-        <JobActions
-          analyzing={analyzing}
-          generatingCoverLetter={generatingCoverLetter}
-          hasCoverLetter={hasGeneratedCoverLetter}
-          onAnalyze={onAnalyze}
-          onGenerateCoverLetter={onGenerateCoverLetter}
-          onDownloadPdf={onDownloadPdf}
-          onEdit={onEdit}
-          onDelete={onDelete}
-        />
       </div>
-    </div>
+    </article>
   );
 }
 

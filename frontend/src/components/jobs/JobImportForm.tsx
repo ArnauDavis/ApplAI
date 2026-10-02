@@ -22,16 +22,23 @@ function JobImportForm({
   }
 
   return (
-    <div className="bg-white p-6 rounded-lg shadow">
-      <h3 className="text-lg font-semibold">
-        Import Job From URL
-      </h3>
+    <section className="border border-line bg-whitewarm p-5 transition-colors duration-200 sm:p-6">
+      <div className="border-b border-line pb-5">
+        <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-muted">
+          Quick import
+        </p>
 
-      <p className="mt-1 text-sm text-gray-600">
-        Paste a job posting URL to automatically import the position.
-      </p>
+        <h3 className="mt-1 font-display text-2xl text-ink">
+          Import a job
+        </h3>
 
-      <div className="mt-4 flex gap-3">
+        <p className="mt-2 max-w-2xl text-sm leading-6 text-muted">
+          Paste a job posting URL and Junction will bring the
+          opportunity into your workspace.
+        </p>
+      </div>
+
+      <div className="mt-5 flex flex-col gap-3 sm:flex-row">
         <input
           type="url"
           value={importUrl}
@@ -39,22 +46,20 @@ function JobImportForm({
             setImportUrl(event.target.value)
           }
           placeholder="https://example.com/job-posting"
-          className="flex-1 border border-gray-300 rounded px-3 py-2"
           disabled={importingJob}
+          className="min-w-0 flex-1 border border-line bg-paper px-3 py-2.5 text-sm text-ink outline-none transition-colors placeholder:text-muted focus:border-copper focus:ring-1 focus:ring-copper/30 disabled:cursor-not-allowed disabled:opacity-60"
         />
 
         <button
           type="button"
           onClick={handleImport}
-          disabled={importingJob}
-          className="bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700 disabled:opacity-50"
+          disabled={importingJob || !importUrl.trim()}
+          className="border border-copper bg-copper px-4 py-2.5 text-sm font-medium text-whitewarm transition-colors duration-150 hover:bg-copper-dark disabled:cursor-not-allowed disabled:border-line disabled:bg-line disabled:text-muted"
         >
-          {importingJob
-            ? "Importing..."
-            : "Import Job"}
+          {importingJob ? "Importing..." : "Import Job"}
         </button>
       </div>
-    </div>
+    </section>
   );
 }
 

@@ -13,7 +13,6 @@ import {
 } from "../services/storageService";
 import type { Job } from "../types/index";
 
-import JobPageHeader from "../components/jobs/JobPageHeader";
 import JobImportForm from "../components/jobs/JobImportForm";
 import JobFormSection from "../components/jobs/JobFormSection";
 import JobList from "../components/jobs/JobList";
@@ -373,50 +372,126 @@ function Jobs() {
 
   if (loading) {
     return (
-      <div>
-        <JobPageHeader />
+      <div className="mx-auto max-w-7xl">
+        <div className="border-b border-line pb-6">
+          <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted">
+            Career Workspace
+          </p>
 
-        <p className="mt-6 text-gray-600">
-          Loading jobs...
-        </p>
+          <h2 className="mt-2 font-display text-4xl tracking-tight text-ink sm:text-5xl">
+            Jobs
+          </h2>
+
+          <p className="mt-3 text-sm text-muted">
+            Loading your opportunities...
+          </p>
+        </div>
       </div>
     );
   }
 
   return (
-    <div>
-      <JobPageHeader />
+    <div className="mx-auto max-w-7xl">
+      <section className="border-b border-line pb-8">
+        <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted">
+          Career Workspace
+        </p>
+
+        <div className="mt-3 flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
+          <div>
+            <h2 className="font-display text-4xl tracking-tight text-ink sm:text-5xl">
+              Jobs
+            </h2>
+
+            <p className="mt-3 max-w-2xl text-sm leading-6 text-muted sm:text-base">
+              Find, organize, and understand the opportunities
+              you're considering.
+            </p>
+          </div>
+
+          <div className="flex items-center gap-2 self-start lg:self-auto">
+            <span className="h-2 w-2 rounded-full bg-moss" />
+
+            <span className="font-mono text-[10px] uppercase tracking-[0.16em] text-muted">
+              {jobs.length}{" "}
+              {jobs.length === 1
+                ? "opportunity"
+                : "opportunities"}
+            </span>
+          </div>
+        </div>
+      </section>
 
       {error && (
-        <div className="mt-4 bg-red-100 text-red-700 p-4 rounded">
-          {error}
+        <div className="mt-6 border border-signal/40 bg-signal/10 px-4 py-3 text-sm">
+          <div className="flex items-start gap-3">
+            <span className="mt-1 h-2 w-2 shrink-0 rounded-full bg-signal" />
+
+            <div>
+              <p className="font-medium text-ink">
+                Something needs attention
+              </p>
+
+              <p className="mt-1 text-muted">
+                {error}
+              </p>
+            </div>
+          </div>
         </div>
       )}
 
-      <div className="mt-6">
-        <JobImportForm
-          onImport={importJob}
-          importingJob={importingJob}
-        />
+      <section className="mt-8">
+        <div className="mb-5">
+          <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-muted">
+            Add opportunity
+          </p>
 
-        <JobFormSection
-          editingJob={editingJob}
-          onSave={
-            editingJob
-              ? (job) =>
-                  updateJob(
-                    editingJob.id,
-                    job
-                  )
-              : addJob
-          }
-          onCancel={() =>
-            setEditingJob(null)
-          }
-        />
-      </div>
+          <h3 className="mt-1 font-display text-2xl text-ink">
+            Bring a role into your workspace
+          </h3>
+        </div>
 
-      <div className="mt-6">
+        <div className="space-y-6">
+          <JobImportForm
+            onImport={importJob}
+            importingJob={importingJob}
+          />
+
+          <JobFormSection
+            editingJob={editingJob}
+            onSave={
+              editingJob
+                ? (job) =>
+                    updateJob(
+                      editingJob.id,
+                      job
+                    )
+                : addJob
+            }
+            onCancel={() =>
+              setEditingJob(null)
+            }
+          />
+        </div>
+      </section>
+
+      <section className="mt-10 border-t border-line pt-8">
+        <div className="mb-5 flex items-end justify-between gap-4">
+          <div>
+            <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-muted">
+              Your opportunities
+            </p>
+
+            <h3 className="mt-1 font-display text-2xl text-ink">
+              Saved jobs
+            </h3>
+          </div>
+
+          <span className="hidden font-mono text-[10px] uppercase tracking-[0.16em] text-muted sm:block">
+            {jobs.length} saved
+          </span>
+        </div>
+
         <JobList
           jobs={jobs}
           analysisResults={analysisResults}
@@ -458,7 +533,7 @@ function Jobs() {
             downloadCoverLetterPdf
           }
         />
-      </div>
+      </section>
     </div>
   );
 }

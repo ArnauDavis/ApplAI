@@ -86,94 +86,116 @@ function ProjectForm({
   return (
     <form
       onSubmit={handleSubmit}
-      className="bg-white p-6 rounded-lg shadow space-y-4"
+      className="border border-line bg-whitewarm p-5 sm:p-6"
     >
-      <h3 className="text-xl font-semibold">
-        {project
-          ? "Edit Project"
-          : "Add Project"}
-      </h3>
-
-      <div>
-        <label className="block font-semibold">
-          Project Name
-        </label>
-
-        <input
-          value={name}
-          onChange={(event) =>
-            setName(event.target.value)
-          }
-          className="mt-2 border rounded p-2 w-full"
-          placeholder="My Project"
-          required
-        />
-      </div>
-
-      <div>
-        <label className="block font-semibold">
-          Description
-        </label>
-
-        <textarea
-          value={description}
-          onChange={(event) =>
-            setDescription(event.target.value)
-          }
-          className="mt-2 border rounded p-2 w-full"
-          rows={4}
-          placeholder="Describe what you built..."
-        />
-      </div>
-
-      <div>
-        <label className="block font-semibold">
-          Technologies
-        </label>
-
-        <input
-          value={technologies}
-          onChange={(event) =>
-            setTechnologies(event.target.value)
-          }
-          className="mt-2 border rounded p-2 w-full"
-          placeholder="React, TypeScript, PostgreSQL"
-        />
-
-        <p className="mt-1 text-sm text-gray-500">
-          Separate technologies with commas.
+      <div className="border-b border-line pb-4">
+        <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-muted">
+          {project
+            ? "Project details"
+            : "Portfolio"}
         </p>
+
+        <h3 className="mt-1 font-display text-2xl text-ink">
+          {project
+            ? "Edit Project"
+            : "Add Project"}
+        </h3>
       </div>
 
-      <div className="flex gap-3">
-        <button
-          type="submit"
-          disabled={saving}
-          className="bg-blue-600 text-white px-4 py-2 rounded disabled:bg-gray-400"
-        >
-          {saving
-            ? "Saving..."
-            : project
-              ? "Save Changes"
-              : "Add Project"}
-        </button>
-
-        {project && onCancel && (
-          <button
-            type="button"
-            onClick={onCancel}
-            className="bg-gray-200 text-gray-700 px-4 py-2 rounded hover:bg-gray-300"
+      <div className="mt-6 space-y-5">
+        <div>
+          <label
+            htmlFor="project-name"
+            className="block text-sm font-medium text-ink"
           >
-            Cancel
+            Project Name
+          </label>
+
+          <input
+            id="project-name"
+            value={name}
+            onChange={(event) =>
+              setName(event.target.value)
+            }
+            className="mt-2 w-full border border-line bg-paper px-3 py-2.5 text-sm text-ink outline-none transition-colors placeholder:text-muted/70 focus:border-copper"
+            placeholder="My Project"
+            required
+          />
+        </div>
+
+        <div>
+          <label
+            htmlFor="project-description"
+            className="block text-sm font-medium text-ink"
+          >
+            Description
+          </label>
+
+          <textarea
+            id="project-description"
+            value={description}
+            onChange={(event) =>
+              setDescription(event.target.value)
+            }
+            className="mt-2 w-full resize-y border border-line bg-paper px-3 py-2.5 text-sm leading-6 text-ink outline-none transition-colors placeholder:text-muted/70 focus:border-copper"
+            rows={4}
+            placeholder="Describe what you built..."
+          />
+        </div>
+
+        <div>
+          <label
+            htmlFor="project-technologies"
+            className="block text-sm font-medium text-ink"
+          >
+            Technologies
+          </label>
+
+          <input
+            id="project-technologies"
+            value={technologies}
+            onChange={(event) =>
+              setTechnologies(event.target.value)
+            }
+            className="mt-2 w-full border border-line bg-paper px-3 py-2.5 text-sm text-ink outline-none transition-colors placeholder:text-muted/70 focus:border-copper"
+            placeholder="React, TypeScript, PostgreSQL"
+          />
+
+          <p className="mt-2 text-xs text-muted">
+            Separate technologies with commas.
+          </p>
+        </div>
+
+        <div className="flex flex-col gap-2 pt-1 sm:flex-row">
+          <button
+            type="submit"
+            disabled={saving}
+            className="border border-copper bg-copper px-4 py-2.5 text-sm font-medium text-whitewarm transition-colors hover:bg-copper-dark disabled:cursor-not-allowed disabled:border-line disabled:bg-parchment disabled:text-muted"
+          >
+            {saving
+              ? "Saving..."
+              : project
+                ? "Save Changes"
+                : "Add Project"}
           </button>
+
+          {project && onCancel && (
+            <button
+              type="button"
+              onClick={onCancel}
+              className="border border-line px-4 py-2.5 text-sm font-medium text-muted transition-colors hover:border-copper hover:text-ink"
+            >
+              Cancel
+            </button>
+          )}
+        </div>
+
+        {saved && (
+          <div className="border-l-2 border-moss bg-moss/10 px-3 py-2.5 text-sm text-ink">
+            Project added successfully.
+          </div>
         )}
       </div>
-
-      {saved && (
-        <p className="text-green-600 font-medium">
-          Project added successfully.
-        </p>
-      )}
     </form>
   );
 }

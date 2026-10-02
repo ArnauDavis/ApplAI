@@ -1,1 +1,145 @@
 @import "tailwindcss";
+
+@theme {
+  /* Core palette */
+  --color-ink: #202522;
+  --color-paper: #f4f1e8;
+  --color-parchment: #eae5d8;
+  --color-line: #d5d0c3;
+  --color-muted: #74766f;
+  --color-whitewarm: #fbfaf6;
+
+  /* Accent palette */
+  --color-copper: #b85c38;
+  --color-copper-dark: #8e452c;
+  --color-moss: #536b58;
+  --color-signal: #d9a441;
+
+  /* Typography */
+  --font-display: Georgia, "Times New Roman", serif;
+  --font-sans: Inter, ui-sans-serif, system-ui, sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+}
+
+/*
+ * Semantic application colors
+ *
+ * Components should use these semantic colors rather than
+ * hard-coded colors whenever possible.
+ */
+
+:root {
+  --app-background: #f4f1e8;
+  --app-surface: #fbfaf6;
+  --app-surface-muted: #eae5d8;
+
+  --app-text: #202522;
+  --app-text-muted: #74766f;
+
+  --app-border: #d5d0c3;
+
+  --app-accent: #b85c38;
+  --app-accent-strong: #8e452c;
+
+  --app-positive: #536b58;
+  --app-attention: #d9a441;
+}
+
+/*
+ * Dark mode
+ *
+ * Dark mode keeps the same Junction visual identity.
+ * It is a change of material and contrast, not a separate theme.
+ */
+
+.dark {
+  --app-background: #171a18;
+  --app-surface: #202420;
+  --app-surface-muted: #252a27;
+
+  --app-text: #f1eee5;
+  --app-text-muted: #9a9b94;
+
+  --app-border: #363b37;
+
+  --app-accent: #c66a45;
+  --app-accent-strong: #d47751;
+
+  --app-positive: #78927c;
+  --app-attention: #d9a441;
+}
+
+/*
+ * Map semantic colors to Tailwind utilities.
+ *
+ * This allows components to continue using classes such as:
+ *
+ * bg-paper
+ * bg-whitewarm
+ * bg-parchment
+ * text-ink
+ * text-muted
+ * border-line
+ * text-copper
+ * bg-moss
+ *
+ * while the actual colors change with the active theme.
+ */
+
+@theme inline {
+  --color-paper: var(--app-background);
+  --color-whitewarm: var(--app-surface);
+  --color-parchment: var(--app-surface-muted);
+
+  --color-ink: var(--app-text);
+  --color-muted: var(--app-text-muted);
+
+  --color-line: var(--app-border);
+
+  --color-copper: var(--app-accent);
+  --color-copper-dark: var(--app-accent-strong);
+
+  --color-moss: var(--app-positive);
+  --color-signal: var(--app-attention);
+}
+
+/*
+ * Global document styles
+ */
+
+html {
+  min-width: 320px;
+  background: var(--app-background);
+  color-scheme: light;
+}
+
+html.dark {
+  color-scheme: dark;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+  background: var(--app-background);
+  color: var(--app-text);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+::selection {
+  background: var(--app-attention);
+  color: var(--color-ink);
+}

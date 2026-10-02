@@ -1171,3 +1171,11 @@ AI-Job-Search-Assistant/
         │
         ├── types/
         │   └── index.ts
+
+
+
+        //update to the vision, I want this to now instead be a place where you make a profile of yourself, upload a resume, answer some get to know you questions or something.Job postings can be copied into the scanner, it will review the job description and use that to make a customized resume and or resume as a pdf ready to go. The scan will also look for questions that will be answered for users to copy paste in. If the scan is unsuccessful. Users can instead copy paste the description in, and also any questions, and get the same perks.
+
+        //Alternatively, resumes aren't needed. This really just be a place to keep track of how many jobs you apply to, rate the jobs you share, and help you make a cover letter using the information you have shared with the database.
+
+        <!-- I am building an app, I am at a point in the process I want to start styling the project. I do not want to style one component at a time to make it prettier, I want a design system. I want an example of the design that I can copy paste into code pen to see if I like it or not. I want a style that does not match every single other ai project built out there. I want an original style that reflects the hard work I have put into this project. I will share the current dev log, but first I want to share the current user story. The user opens the app, they will see how many jobs they've applied to, how many jobs they have saved and how many interviews they have had. User will have a profile they can edit to express who they are, their skill set, work they have done, etc. There will be a page that they can import a job, get an analysis on the job, and have a cover letter made. Then there is a page that shows the jobs that have been applied to. That is the user story, here is the dev log -->

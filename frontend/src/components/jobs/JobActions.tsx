@@ -1,5 +1,4 @@
 interface JobActionsProps {
-  jobId: string;
   analyzing: boolean;
   generatingCoverLetter: boolean;
   hasCoverLetter: boolean;
@@ -21,54 +20,54 @@ function JobActions({
   onDelete,
 }: JobActionsProps) {
   return (
-    <div className="flex gap-3">
+    <div className="flex flex-col gap-2">
       <button
         type="button"
         onClick={onAnalyze}
         disabled={analyzing}
-        className="text-purple-600 hover:text-purple-800 font-medium disabled:opacity-50"
+        className="w-full border border-copper bg-copper px-3 py-2 text-left text-xs font-medium text-whitewarm transition-colors duration-150 hover:bg-copper-dark disabled:cursor-not-allowed disabled:border-line disabled:bg-line disabled:text-muted"
       >
-        {analyzing
-          ? "Analyzing..."
-          : "Analyze"}
+        {analyzing ? "Analyzing..." : "Analyze Job"}
       </button>
 
       <button
         type="button"
         onClick={onGenerateCoverLetter}
         disabled={generatingCoverLetter}
-        className="text-green-600 hover:text-green-800 font-medium disabled:opacity-50"
+        className="w-full border border-line bg-parchment px-3 py-2 text-left text-xs font-medium text-ink transition-colors duration-150 hover:border-copper hover:text-copper disabled:cursor-not-allowed disabled:opacity-50"
       >
         {generatingCoverLetter
           ? "Generating..."
-          : "Cover Letter"}
+          : "Generate Cover Letter"}
       </button>
 
       {hasCoverLetter && (
         <button
           type="button"
           onClick={onDownloadPdf}
-          className="text-indigo-600 hover:text-indigo-800 font-medium"
+          className="w-full border border-line bg-parchment px-3 py-2 text-left text-xs font-medium text-ink transition-colors duration-150 hover:border-copper hover:text-copper"
         >
           Download PDF
         </button>
       )}
 
-      <button
-        type="button"
-        onClick={onEdit}
-        className="text-blue-600 hover:text-blue-800 font-medium"
-      >
-        Edit
-      </button>
+      <div className="mt-2 border-t border-line pt-2">
+        <button
+          type="button"
+          onClick={onEdit}
+          className="w-full px-3 py-2 text-left text-xs font-medium text-muted transition-colors duration-150 hover:bg-parchment hover:text-ink"
+        >
+          Edit Job
+        </button>
 
-      <button
-        type="button"
-        onClick={onDelete}
-        className="text-red-600 hover:text-red-800 font-medium"
-      >
-        Delete
-      </button>
+        <button
+          type="button"
+          onClick={onDelete}
+          className="w-full px-3 py-2 text-left text-xs font-medium text-signal transition-colors duration-150 hover:bg-signal/10"
+        >
+          Delete Job
+        </button>
+      </div>
     </div>
   );
 }
