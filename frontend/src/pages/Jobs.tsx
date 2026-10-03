@@ -108,6 +108,14 @@ function Jobs() {
           await getJobsFromApi(profile.id);
 
         setJobs(profileJobs);
+
+        const savedAnalyses: Record<string, JobAnalysis> = {};
+        profileJobs.forEach((job) => {
+          if (job.analysis) {
+            savedAnalyses[job.id] = job.analysis;
+          }
+        });
+        setAnalysisResults(savedAnalyses);
         setError(null);
       } catch (error) {
         console.error(

@@ -41,6 +41,16 @@ export interface Job {
   url?: string | null;
   requiredSkills?: string[];
   createdAt: string;
+  analysis?: JobAnalysis | null;
+}
+
+export interface JobAnalysis {
+  jobRequirements: string[];
+  matchingQualifications: string[];
+  missingRequirements: string[];
+  relevantExperience: string[];
+  potentialConcerns: string[];
+  suggestions: string[];
 }
 
 export type ApplicationStatus =

@@ -1,3 +1,4 @@
+import { prisma } from "../lib/prisma.ts";
 import { getProfileById } from "./profileService.ts";
 import {
   analyzeJob,
@@ -22,6 +23,22 @@ export async function analyzeJobForProfile(
     throw new Error("Job not found");
   }
 
+  const existingJob = await prisma.job.findUnique({
+    where: {
+      id: jobId,
+    },
+  });
+
+  if (!existingJob) {
+    throw new Error("Job not found");
+  }
+
+  // Return the saved analysis instead of
+  // calling the AI again.
+  if (existingJob.analysis) {
+    return existingJob.analysis as unknown as JobAnalysisResult;
+  }
+
   const result = await analyzeJob(
     {
       profile: {
@@ -35,7 +52,7 @@ export async function analyzeJobForProfile(
             title: experience.title,
             description: experience.description,
             startDate: experience.startDate,
-            endDate: experience.endDate,
+            endDate: experience.endDate ?? null,
           })
         ),
 
@@ -52,11 +69,20 @@ export async function analyzeJobForProfile(
         title: job.title,
         company: job.company,
         description: job.description,
-        url: job.url,
+        url: job.url ?? null,
       },
     },
     "ollama"
   );
+
+  await prisma.job.update({
+    where: {
+      id: jobId,
+    },
+    data: {
+      analysis: JSON.parse(JSON.stringify(result)),
+    },
+  });
 
   return result;
 }

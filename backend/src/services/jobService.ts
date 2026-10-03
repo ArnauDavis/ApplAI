@@ -43,6 +43,7 @@ export async function getJobs(profileId: string) {
     description: job.description,
     url: job.url,
     coverLetter: job.coverLetter,
+    analysis: job.analysis,
     createdAt: job.createdAt,
   }));
 }
