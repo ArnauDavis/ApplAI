@@ -1,3 +1,4 @@
+import { useState } from "react";
 import type { Job } from "../../types/index";
 import type { JobAnalysis } from "../../services/storageService";
 import JobAnalysisDisplay from "./JobAnalysisDisplay";
@@ -38,6 +39,10 @@ function JobCard({
   onShowAnalysis,
   onDownloadSavedCoverLetter,
 }: JobCardProps) {
+
+  const [descriptionExpanded, setDescriptionExpanded] =
+    useState(false);
+
   return (
     <article
       id={`job-${job.id}`}
@@ -61,10 +66,35 @@ function JobCard({
             </div>
 
             {job.description && (
-              <p className="mt-5 max-w-3xl text-sm leading-6 text-muted">
-                {job.description}
-              </p>
+              <div className="mt-5 max-w-3xl">
+                <p
+                  className={`text-sm leading-6 text-muted ${
+                    descriptionExpanded
+                      ? ""
+                      : "line-clamp-2"
+                  }`}
+                >
+                  {job.description}
+                </p>
+                
+                {job.description.length > 200 && (
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setDescriptionExpanded(
+                        (expanded) => !expanded
+                      )
+                    }
+                    className="mt-2 font-mono text-[10px] uppercase tracking-[0.14em] text-copper transition-colors hover:text-copper-dark"
+                  >
+                    {descriptionExpanded
+                      ? "Show less"
+                      : "Show more"}
+                  </button>
+                )}
+              </div>
             )}
+
 
             {job.url && (
               <a

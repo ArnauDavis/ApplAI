@@ -14,7 +14,7 @@ export async function createJob(
       title: jobData.title,
       company: jobData.company,
       description: jobData.description,
-      url: jobData.url,
+      url: jobData.url ?? null,
       userProfileId: profileId,
     },
   });
@@ -43,6 +43,7 @@ export async function getJobs(profileId: string) {
     description: job.description,
     url: job.url,
     coverLetter: job.coverLetter,
+    createdAt: job.createdAt,
   }));
 }
 

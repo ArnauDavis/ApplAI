@@ -21,6 +21,18 @@ import JobImportForm from "../components/jobs/JobImportForm";
 import JobFormSection from "../components/jobs/JobFormSection";
 import JobList from "../components/jobs/JobList";
 
+function getHeaderHeight() {
+  if (window.innerWidth >= 1024) {
+    return 88;
+  }
+
+  if (window.innerWidth >= 640) {
+    return 72;
+  }
+
+  return 64;
+}
+
 function Jobs() {
   const [jobs, setJobs] = useState<Job[]>([]);
 
@@ -29,6 +41,12 @@ function Jobs() {
 
   const [editingJob, setEditingJob] =
     useState<Job | null>(null);
+
+  const [sortOption, setSortOption] =
+    useState<"newest" | "oldest">("newest");
+
+  const [jobToScrollTo, setJobToScrollTo] =
+    useState<string | null>(null);
 
   const [loading, setLoading] =
     useState(true);
@@ -60,6 +78,16 @@ function Jobs() {
     generatingCoverLetterJobId,
     setGeneratingCoverLetterJobId,
   ] = useState<string | null>(null);
+
+  const sortedJobs = [...jobs].sort((a, b) => {
+    const dateA = new Date(a.createdAt).getTime();
+    const dateB = new Date(b.createdAt).getTime();
+
+    return sortOption === "newest"
+      ? dateB - dateA
+      : dateA - dateB;
+  });
+
 
   useEffect(() => {
     async function loadJobs() {
@@ -102,21 +130,77 @@ function Jobs() {
     if (!editingJob) {
       return;
     }
-  
+
     const formElement =
       document.getElementById("job-form");
-  
+
     if (!formElement) {
       return;
     }
-  
-    formElement.scrollIntoView({
+
+    const headerHeight =
+      getHeaderHeight();
+
+    const formTop =
+      formElement.getBoundingClientRect().top +
+      window.scrollY;
+
+    window.scrollTo({
+      top: Math.max(
+        0,
+        formTop - headerHeight
+      ),
       behavior: "smooth",
-      block: "start",
     });
   }, [editingJob]);
 
+  useEffect(() => {
+    if (!jobToScrollTo) {
+      return;
+    }
 
+    const jobId = jobToScrollTo;
+
+    setJobToScrollTo(null);
+
+    requestAnimationFrame(() => {
+      const jobElement =
+        document.getElementById(
+          `job-${jobId}`
+        );
+
+      if (!jobElement) {
+        return;
+      }
+
+      const headerHeight =
+        getHeaderHeight();
+
+      const jobTop =
+        jobElement.getBoundingClientRect().top +
+        window.scrollY;
+
+      window.scrollTo({
+        top: Math.max(
+          0,
+          jobTop - headerHeight
+        ),
+        behavior: "smooth",
+      });
+    });
+  }, [jobToScrollTo, jobs]);
+
+  function startEditingJob(job: Job) {
+    setEditingJob(job);
+  }
+
+  function cancelEditingJob() {
+    if (editingJob) {
+      setJobToScrollTo(editingJob.id);
+    }
+
+    setEditingJob(null);
+  }
 
   async function addJob(job: {
     title: string;
@@ -173,13 +257,15 @@ function Jobs() {
         );
 
       setJobs((currentJobs) =>
-        currentJobs.map((existingJob) =>
-          existingJob.id === jobId
-            ? updatedJob
-            : existingJob
+        currentJobs.map(
+          (existingJob) =>
+            existingJob.id === jobId
+              ? updatedJob
+              : existingJob
         )
       );
 
+      setJobToScrollTo(jobId);
       setEditingJob(null);
       setError(null);
     } catch (error) {
@@ -310,7 +396,10 @@ function Jobs() {
     }
 
     try {
-      setDownloadingCoverLetterJobId(jobId);
+      setDownloadingCoverLetterJobId(
+        jobId
+      );
+
       setError(null);
 
       const pdf =
@@ -345,7 +434,9 @@ function Jobs() {
         "Unable to download cover letter PDF."
       );
     } finally {
-      setDownloadingCoverLetterJobId(null);
+      setDownloadingCoverLetterJobId(
+        null
+      );
     }
   }
 
@@ -492,32 +583,59 @@ function Jobs() {
                     )
                 : addJob
             }
-            onCancel={() =>
-              setEditingJob(null)
-            }
+            onCancel={cancelEditingJob}
           />
         </div>
       </section>
 
       <section className="mt-10 border-t border-line pt-8">
-        <div className="mb-5 flex items-end justify-between gap-4">
+        <div className="mb-5 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
           <div>
             <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-muted">
               Your opportunities
             </p>
-
+                  
             <h3 className="mt-1 font-display text-2xl text-ink">
               Saved jobs
             </h3>
           </div>
-
-          <span className="hidden font-mono text-[10px] uppercase tracking-[0.16em] text-muted sm:block">
-            {jobs.length} saved
-          </span>
+                  
+          <div className="flex items-center gap-4">
+            <label className="flex items-center gap-2">
+              <span className="font-mono text-[10px] uppercase tracking-[0.16em] text-muted">
+                Sort
+              </span>
+                  
+              <select
+                value={sortOption}
+                onChange={(event) =>
+                  setSortOption(
+                    event.target.value as
+                      | "newest"
+                      | "oldest"
+                  )
+                }
+                className="border border-line bg-parchment px-3 py-2 text-xs font-medium text-ink outline-none transition-colors focus:border-copper"
+              >
+                <option value="newest">
+                  Newest added
+                </option>
+              
+                <option value="oldest">
+                  Oldest added
+                </option>
+              </select>
+            </label>
+              
+            <span className="hidden font-mono text-[10px] uppercase tracking-[0.16em] text-muted sm:block">
+              {jobs.length} saved
+            </span>
+          </div>
         </div>
 
+
         <JobList
-          jobs={jobs}
+          jobs={sortedJobs}
           analysisResults={analysisResults}
           hiddenAnalysis={hiddenAnalysis}
           analyzingJobId={analyzingJobId}
@@ -535,7 +653,7 @@ function Jobs() {
           onDownloadPdf={
             downloadCoverLetterPdf
           }
-          onEdit={setEditingJob}
+          onEdit={startEditingJob}
           onDelete={deleteJob}
           onHideAnalysis={(jobId) =>
             setHiddenAnalysis(

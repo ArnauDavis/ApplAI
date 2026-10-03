@@ -39,8 +39,8 @@ function JobList({
 }: JobListProps) {
   if (jobs.length === 0) {
     return (
-      <div className="bg-white p-6 rounded-lg shadow">
-        <p className="text-gray-600">
+      <div className="border border-line bg-whitewarm p-6">
+        <p className="text-sm text-muted">
           No jobs added yet.
         </p>
       </div>

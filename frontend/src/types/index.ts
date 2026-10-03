@@ -40,6 +40,7 @@ export interface Job {
   description: string;
   url?: string | null;
   requiredSkills?: string[];
+  createdAt: string;
 }
 
 export type ApplicationStatus =
