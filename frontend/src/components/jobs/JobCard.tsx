@@ -39,7 +39,10 @@ function JobCard({
   onDownloadSavedCoverLetter,
 }: JobCardProps) {
   return (
-    <article className="border border-line bg-whitewarm transition-colors duration-200">
+    <article
+      id={`job-${job.id}`}
+      className="border border-line bg-whitewarm transition-colors duration-200"
+    >
       <div className="p-5 sm:p-6">
         <div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
           <div className="min-w-0 flex-1">

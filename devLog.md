@@ -1075,7 +1075,8 @@ Current backend workflow
 
 AI-Job-Search-Assistant/
 
-├── DEVELOPER_LOG.md
+├── devLog.md
+├── Design_System.md
 ├── README.md
 │
 ├── frontend/

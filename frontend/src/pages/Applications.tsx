@@ -86,11 +86,16 @@ function Applications() {
   async function addApplication(
     application: JobApplication
   ) {
+    if (!application.jobId) {
+      setError("A job must be selected.");
+      return;
+    }
+  
     if (!profileId) {
       setError("No profile is available.");
       return;
     }
-
+  
     try {
       const createdApplication =
         await createApplicationToApi(
@@ -98,7 +103,7 @@ function Applications() {
           {
             jobId: application.jobId,
             status: application.status,
-            notes: application.notes,
+            notes: application.notes ?? undefined,
           }
         );
 
@@ -211,109 +216,213 @@ function Applications() {
 
   if (loading) {
     return (
-      <div>
-        <h2 className="text-2xl font-semibold">
-          Applications
-        </h2>
+      <div className="mx-auto max-w-7xl">
+        <div className="border-b border-line pb-6">
+          <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted">
+            Career Workspace
+          </p>
 
-        <p className="mt-6 text-gray-600">
-          Loading applications...
-        </p>
+          <h2 className="mt-2 font-display text-4xl tracking-tight text-ink sm:text-5xl">
+            Applications
+          </h2>
+
+          <p className="mt-3 text-sm text-muted">
+            Loading your applications...
+          </p>
+        </div>
       </div>
     );
   }
 
   return (
-    <div>
-      <h2 className="text-2xl font-semibold">
-        Applications
-      </h2>
+    <div className="mx-auto max-w-7xl">
+      <section className="border-b border-line pb-8">
+        <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted">
+          Career Workspace
+        </p>
 
-      <p className="mt-2 text-gray-600">
-        Track your job application progress.
-      </p>
+        <div className="mt-3 flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
+          <div>
+            <h2 className="font-display text-4xl tracking-tight text-ink sm:text-5xl">
+              Applications
+            </h2>
+
+            <p className="mt-3 max-w-2xl text-sm leading-6 text-muted sm:text-base">
+              Track the opportunities you've moved into
+              your application workflow.
+            </p>
+          </div>
+
+          <div className="flex items-center gap-2 self-start lg:self-auto">
+            <span className="h-2 w-2 rounded-full bg-moss" />
+
+            <span className="font-mono text-[10px] uppercase tracking-[0.16em] text-muted">
+              {applications.length}{" "}
+              {applications.length === 1
+                ? "application"
+                : "applications"}
+            </span>
+          </div>
+        </div>
+      </section>
 
       {error && (
-        <div className="mt-4 bg-red-100 text-red-700 p-4 rounded">
-          {error}
+        <div className="mt-6 border border-signal/40 bg-signal/10 px-4 py-3 text-sm">
+          <div className="flex items-start gap-3">
+            <span className="mt-1 h-2 w-2 shrink-0 rounded-full bg-signal" />
+
+            <div>
+              <p className="font-medium text-ink">
+                Something needs attention
+              </p>
+
+              <p className="mt-1 text-muted">
+                {error}
+              </p>
+            </div>
+          </div>
         </div>
       )}
 
-      <div className="mt-6">
+      <section className="mt-8">
+        <div className="mb-5">
+          <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-muted">
+            Add application
+          </p>
+
+          <h3 className="mt-1 font-display text-2xl text-ink">
+            Move an opportunity into your workflow
+          </h3>
+        </div>
+
         <ApplicationForm
           jobs={jobs}
           onAddApplication={addApplication}
         />
-      </div>
+      </section>
 
-      <div className="mt-6 space-y-4">
-        {applications.map((application) => (
-          <div
-            key={application.id}
-            className="bg-white p-6 rounded-lg shadow"
-          >
-            <h3 className="text-lg font-semibold">
-              {application.job.title}
+      <section className="mt-10 border-t border-line pt-8">
+        <div className="mb-5 flex items-end justify-between gap-4">
+          <div>
+            <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-muted">
+              Application tracker
+            </p>
+
+            <h3 className="mt-1 font-display text-2xl text-ink">
+              Your applications
             </h3>
-
-            <p className="text-gray-600">
-              {application.job.company}
-            </p>
-
-            <p className="mt-3">
-              {application.job.description}
-            </p>
-
-            {application.job.url && (
-              <a
-                href={application.job.url}
-                target="_blank"
-                rel="noreferrer"
-                className="mt-3 inline-block text-blue-600 hover:underline"
-              >
-                View Job
-              </a>
-            )}
-
-            <div className="mt-4">
-              <ApplicationStatusSelect
-                status={
-                  application.status as JobApplication["status"]
-                }
-                onChange={(status) =>
-                  updateStatus(
-                    application.id,
-                    status
-                  )
-                }
-              />
-            </div>
-
-            {application.notes && (
-              <p className="mt-4 text-gray-600">
-                {application.notes}
-              </p>
-            )}
-
-            <button
-              type="button"
-              onClick={() =>
-                deleteApplication(
-                  application.id
-                )
-              }
-              disabled={
-                deletingId === application.id
-              }
-              className="mt-4 bg-red-600 text-white px-4 py-2 rounded disabled:bg-gray-400"
-            >
-              {deletingId === application.id
-                ? "Deleting..."
-                : "Delete Application"}
-            </button>
           </div>
-        ))}
-      </div>
+
+          <span className="hidden font-mono text-[10px] uppercase tracking-[0.16em] text-muted sm:block">
+            {applications.length} tracked
+          </span>
+        </div>
+
+        {applications.length === 0 ? (
+          <div className="border border-line bg-whitewarm px-5 py-8 sm:px-6">
+            <p className="font-display text-xl text-ink">
+              No applications yet.
+            </p>
+
+            <p className="mt-2 max-w-xl text-sm leading-6 text-muted">
+              Applications you add to your workflow will
+              appear here so you can keep track of their
+              progress.
+            </p>
+          </div>
+        ) : (
+          <div className="space-y-4">
+            {applications.map((application) => (
+              <div
+                key={application.id}
+                className="border border-line bg-whitewarm p-5 sm:p-6"
+              >
+                <div className="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
+                  <div className="min-w-0">
+                    <p className="font-mono text-[9px] uppercase tracking-[0.16em] text-muted">
+                      Application
+                    </p>
+
+                    <h4 className="mt-2 font-display text-2xl text-ink">
+                      {application.job.title}
+                    </h4>
+
+                    <p className="mt-1 text-sm text-muted">
+                      {application.job.company}
+                    </p>
+                  </div>
+
+                  <div className="shrink-0">
+                    <p className="mb-2 font-mono text-[9px] uppercase tracking-[0.16em] text-muted">
+                      Status
+                    </p>
+
+                    <ApplicationStatusSelect
+                      status={
+                        application.status as JobApplication["status"]
+                      }
+                      onChange={(status) =>
+                        updateStatus(
+                          application.id,
+                          status
+                        )
+                      }
+                    />
+                  </div>
+                </div>
+
+                <div className="mt-5 border-t border-line pt-5">
+                  <p className="text-sm leading-6 text-muted">
+                    {application.job.description}
+                  </p>
+
+                  {application.job.url && (
+                    <a
+                      href={application.job.url}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="mt-4 inline-flex font-mono text-[10px] uppercase tracking-[0.16em] text-copper transition-colors hover:text-copper-dark"
+                    >
+                      View job posting →
+                    </a>
+                  )}
+                </div>
+
+                {application.notes && (
+                  <div className="mt-5 border-t border-line pt-5">
+                    <p className="font-mono text-[9px] uppercase tracking-[0.16em] text-muted">
+                      Notes
+                    </p>
+
+                    <p className="mt-2 text-sm leading-6 text-ink">
+                      {application.notes}
+                    </p>
+                  </div>
+                )}
+
+                <div className="mt-5 flex justify-end border-t border-line pt-4">
+                  <button
+                    type="button"
+                    onClick={() =>
+                      deleteApplication(
+                        application.id
+                      )
+                    }
+                    disabled={
+                      deletingId === application.id
+                    }
+                    className="font-mono text-[10px] uppercase tracking-[0.16em] text-muted transition-colors hover:text-copper-dark disabled:cursor-not-allowed disabled:opacity-50"
+                  >
+                    {deletingId === application.id
+                      ? "Deleting..."
+                      : "Delete application"}
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </section>
     </div>
   );
 }

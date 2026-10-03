@@ -18,105 +18,221 @@ function JobAnalysisDisplay({
       <button
         type="button"
         onClick={onShow}
-        className="mt-4 text-sm text-purple-600 hover:text-purple-800 font-medium"
+        className="mt-4 font-mono text-[10px] uppercase tracking-[0.16em] text-copper transition-colors hover:text-copper-dark focus:outline-none focus:ring-2 focus:ring-copper/30"
       >
-        Show Analysis
+        Show analysis →
       </button>
     );
   }
 
   return (
-    <div className="mt-4 p-4 bg-purple-50 border border-purple-200 rounded-lg">
-      <h4 className="font-semibold text-purple-900">
-        AI Job Analysis
-      </h4>
-
-      <button
-        type="button"
-        onClick={onHide}
-        className="mt-2 text-sm text-purple-600 hover:text-purple-800"
-      >
-        Hide Analysis
-      </button>
-
-      <div className="mt-3 space-y-4 text-sm text-gray-700">
+    <div className="mt-6 border border-line bg-parchment">
+      <div className="flex items-start justify-between gap-4 border-b border-line px-5 py-4 sm:px-6">
         <div>
-          <h5 className="font-semibold text-gray-900">
-            Job Requirements
+          <p className="font-mono text-[9px] uppercase tracking-[0.18em] text-muted">
+            Evidence review
+          </p>
+
+          <h4 className="mt-1 font-display text-2xl text-ink">
+            Job analysis
+          </h4>
+        </div>
+
+        <button
+          type="button"
+          onClick={onHide}
+          className="shrink-0 font-mono text-[9px] uppercase tracking-[0.14em] text-muted transition-colors hover:text-copper-dark focus:outline-none focus:ring-2 focus:ring-copper/30"
+        >
+          Hide
+        </button>
+      </div>
+
+      <div className="divide-y divide-line">
+        <section className="px-5 py-5 sm:px-6">
+          <p className="font-mono text-[9px] uppercase tracking-[0.16em] text-muted">
+            Requirements
+          </p>
+
+          <h5 className="mt-1 font-medium text-ink">
+            What the role asks for
           </h5>
 
           {analysis.jobRequirements.length > 0 ? (
-            <ul className="mt-1 list-disc list-inside">
+            <ul className="mt-3 space-y-2">
               {analysis.jobRequirements.map((item) => (
-                <li key={item}>{item}</li>
+                <li
+                  key={item}
+                  className="flex gap-3 text-sm leading-6 text-ink"
+                >
+                  <span
+                    aria-hidden="true"
+                    className="mt-[0.6rem] h-1.5 w-1.5 shrink-0 bg-muted"
+                  />
+                  <span>{item}</span>
+                </li>
               ))}
             </ul>
           ) : (
-            <p className="mt-1 text-gray-500">
+            <p className="mt-3 text-sm leading-6 text-muted">
               No specific requirements identified.
             </p>
           )}
-        </div>
+        </section>
 
-        <div>
-          <h5 className="font-semibold text-gray-900">
-            Matching Qualifications
+        <section className="px-5 py-5 sm:px-6">
+          <p className="font-mono text-[9px] uppercase tracking-[0.16em] text-moss">
+            Match
+          </p>
+
+          <h5 className="mt-1 font-medium text-ink">
+            Matching qualifications
           </h5>
 
-          <ul className="mt-1 list-disc list-inside">
-            {analysis.matchingQualifications.map((item) => (
-              <li key={item}>{item}</li>
-            ))}
-          </ul>
-        </div>
+          {analysis.matchingQualifications.length > 0 ? (
+            <ul className="mt-3 space-y-2">
+              {analysis.matchingQualifications.map((item) => (
+                <li
+                  key={item}
+                  className="flex gap-3 text-sm leading-6 text-ink"
+                >
+                  <span
+                    aria-hidden="true"
+                    className="mt-[0.6rem] h-1.5 w-1.5 shrink-0 bg-moss"
+                  />
+                  <span>{item}</span>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p className="mt-3 text-sm leading-6 text-muted">
+              No matching qualifications identified.
+            </p>
+          )}
+        </section>
 
-        <div>
-          <h5 className="font-semibold text-gray-900">
-            Missing Requirements
+        <section className="px-5 py-5 sm:px-6">
+          <p className="font-mono text-[9px] uppercase tracking-[0.16em] text-signal">
+            Gap
+          </p>
+
+          <h5 className="mt-1 font-medium text-ink">
+            Missing requirements
           </h5>
 
-          <ul className="mt-1 list-disc list-inside">
-            {analysis.missingRequirements.map((item) => (
-              <li key={item}>{item}</li>
-            ))}
-          </ul>
-        </div>
+          {analysis.missingRequirements.length > 0 ? (
+            <ul className="mt-3 space-y-2">
+              {analysis.missingRequirements.map((item) => (
+                <li
+                  key={item}
+                  className="flex gap-3 text-sm leading-6 text-ink"
+                >
+                  <span
+                    aria-hidden="true"
+                    className="mt-[0.6rem] h-1.5 w-1.5 shrink-0 bg-signal"
+                  />
+                  <span>{item}</span>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p className="mt-3 text-sm leading-6 text-muted">
+              No missing requirements identified.
+            </p>
+          )}
+        </section>
 
-        <div>
-          <h5 className="font-semibold text-gray-900">
-            Relevant Experience
+        <section className="px-5 py-5 sm:px-6">
+          <p className="font-mono text-[9px] uppercase tracking-[0.16em] text-moss">
+            Evidence
+          </p>
+
+          <h5 className="mt-1 font-medium text-ink">
+            Relevant experience
           </h5>
 
-          <ul className="mt-1 list-disc list-inside">
-            {analysis.relevantExperience.map((item) => (
-              <li key={item}>{item}</li>
-            ))}
-          </ul>
-        </div>
+          {analysis.relevantExperience.length > 0 ? (
+            <ul className="mt-3 space-y-2">
+              {analysis.relevantExperience.map((item) => (
+                <li
+                  key={item}
+                  className="flex gap-3 text-sm leading-6 text-ink"
+                >
+                  <span
+                    aria-hidden="true"
+                    className="mt-[0.6rem] h-1.5 w-1.5 shrink-0 bg-moss"
+                  />
+                  <span>{item}</span>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p className="mt-3 text-sm leading-6 text-muted">
+              No relevant experience identified.
+            </p>
+          )}
+        </section>
 
-        <div>
-          <h5 className="font-semibold text-gray-900">
-            Potential Concerns
+        <section className="px-5 py-5 sm:px-6">
+          <p className="font-mono text-[9px] uppercase tracking-[0.16em] text-signal">
+            Concern
+          </p>
+
+          <h5 className="mt-1 font-medium text-ink">
+            Potential concerns
           </h5>
 
-          <ul className="mt-1 list-disc list-inside">
-            {analysis.potentialConcerns.map((item) => (
-              <li key={item}>{item}</li>
-            ))}
-          </ul>
-        </div>
+          {analysis.potentialConcerns.length > 0 ? (
+            <ul className="mt-3 space-y-2">
+              {analysis.potentialConcerns.map((item) => (
+                <li
+                  key={item}
+                  className="flex gap-3 text-sm leading-6 text-ink"
+                >
+                  <span
+                    aria-hidden="true"
+                    className="mt-[0.6rem] h-1.5 w-1.5 shrink-0 bg-signal"
+                  />
+                  <span>{item}</span>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p className="mt-3 text-sm leading-6 text-muted">
+              No potential concerns identified.
+            </p>
+          )}
+        </section>
 
-        <div>
-          <h5 className="font-semibold text-gray-900">
-            Suggestions
+        <section className="bg-whitewarm px-5 py-5 sm:px-6">
+          <p className="font-mono text-[9px] uppercase tracking-[0.16em] text-copper">
+            Suggestion
+          </p>
+
+          <h5 className="mt-1 font-medium text-ink">
+            Consider next
           </h5>
 
-          <ul className="mt-1 list-disc list-inside">
-            {analysis.suggestions.map((item) => (
-              <li key={item}>{item}</li>
-            ))}
-          </ul>
-        </div>
+          {analysis.suggestions.length > 0 ? (
+            <ul className="mt-3 space-y-2">
+              {analysis.suggestions.map((item) => (
+                <li
+                  key={item}
+                  className="flex gap-3 text-sm leading-6 text-ink"
+                >
+                  <span
+                    aria-hidden="true"
+                    className="mt-[0.6rem] h-1.5 w-1.5 shrink-0 bg-copper"
+                  />
+                  <span>{item}</span>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p className="mt-3 text-sm leading-6 text-muted">
+              No suggestions available.
+            </p>
+          )}
+        </section>
       </div>
     </div>
   );

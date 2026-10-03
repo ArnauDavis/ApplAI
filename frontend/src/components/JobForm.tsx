@@ -82,21 +82,35 @@ function JobForm({
 
   return (
     <form
+      id="job-form"
       onSubmit={handleSubmit}
-      className="border border-line bg-whitewarm p-5 transition-colors duration-200 sm:p-6"
+      className="scroll-mt-6 border border-line bg-whitewarm p-5 transition-colors duration-1000 sm:scroll-mt-8 sm:p-6 lg:scroll-mt-30"
     >
-      <div className="border-b border-line pb-5">
-        <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-muted">
-          {job ? "Edit opportunity" : "New opportunity"}
-        </p>
 
-        <h3 className="mt-1 font-display text-2xl text-ink">
-          {job ? "Edit Job" : "Add a job"}
-        </h3>
+      <div className="border-b border-line pb-5">
+        <div className="flex items-center justify-between gap-4">
+          <div>
+            <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-muted">
+              {job
+                ? "Editing opportunity"
+                : "New opportunity"}
+            </p>
+
+            <h3 className="mt-1 font-display text-2xl text-ink">
+              {job ? "Edit Job" : "Add a job"}
+            </h3>
+          </div>
+
+          {job && (
+            <span className="shrink-0 border border-copper/40 bg-copper/10 px-2.5 py-1 font-mono text-[9px] uppercase tracking-[0.14em] text-copper-dark">
+              Editing
+            </span>
+          )}
+        </div>
 
         <p className="mt-2 max-w-2xl text-sm leading-6 text-muted">
           {job
-            ? "Update the details for this opportunity."
+            ? "You're editing this opportunity. Make your changes and save when you're ready."
             : "Add an opportunity manually to your career workspace."}
         </p>
       </div>

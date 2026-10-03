@@ -1,4 +1,8 @@
-import { useEffect, useState } from "react";
+import {
+  useEffect,
+  useLayoutEffect,
+  useState,
+} from "react";
 import {
   getProfilesFromApi,
   getJobsFromApi,
@@ -93,6 +97,26 @@ function Jobs() {
 
     loadJobs();
   }, []);
+
+  useLayoutEffect(() => {
+    if (!editingJob) {
+      return;
+    }
+  
+    const formElement =
+      document.getElementById("job-form");
+  
+    if (!formElement) {
+      return;
+    }
+  
+    formElement.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+    });
+  }, [editingJob]);
+
+
 
   async function addJob(job: {
     title: string;
