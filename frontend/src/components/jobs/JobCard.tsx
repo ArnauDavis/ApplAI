@@ -141,9 +141,11 @@ function JobCard({
           <div className="shrink-0 lg:w-48">
             <JobActions
               analyzing={analyzing}
+              hasAnalysis={Boolean(analysis)}
               generatingCoverLetter={generatingCoverLetter}
               hasCoverLetter={hasGeneratedCoverLetter}
               onAnalyze={onAnalyze}
+              onShowAnalysis={onShowAnalysis}
               onGenerateCoverLetter={onGenerateCoverLetter}
               onDownloadPdf={onDownloadPdf}
               onEdit={onEdit}

@@ -94,35 +94,40 @@ function Jobs() {
       try {
         const profiles =
           await getProfilesFromApi();
-
+      
         if (profiles.length === 0) {
           setError("No profile was found.");
           return;
         }
-
+      
         const profile = profiles[0];
-
+      
         setProfileId(profile.id);
-
+      
         const profileJobs =
           await getJobsFromApi(profile.id);
-
+      
         setJobs(profileJobs);
-
+      
         const savedAnalyses: Record<string, JobAnalysis> = {};
+        const savedHiddenAnalysis: Record<string, boolean> = {};
+      
         profileJobs.forEach((job) => {
           if (job.analysis) {
             savedAnalyses[job.id] = job.analysis;
+            savedHiddenAnalysis[job.id] = true;
           }
         });
+      
         setAnalysisResults(savedAnalyses);
+        setHiddenAnalysis(savedHiddenAnalysis);
         setError(null);
       } catch (error) {
         console.error(
           "Failed to load jobs:",
           error
         );
-
+      
         setError(
           "Unable to load jobs from the backend."
         );
@@ -130,7 +135,7 @@ function Jobs() {
         setLoading(false);
       }
     }
-
+  
     loadJobs();
   }, []);
 

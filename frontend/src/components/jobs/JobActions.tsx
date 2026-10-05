@@ -1,8 +1,10 @@
 interface JobActionsProps {
   analyzing: boolean;
+  hasAnalysis: boolean;
   generatingCoverLetter: boolean;
   hasCoverLetter: boolean;
   onAnalyze: () => void;
+  onShowAnalysis: () => void;
   onGenerateCoverLetter: () => void;
   onDownloadPdf: () => void;
   onEdit: () => void;
@@ -11,9 +13,11 @@ interface JobActionsProps {
 
 function JobActions({
   analyzing,
+  hasAnalysis,
   generatingCoverLetter,
   hasCoverLetter,
   onAnalyze,
+  onShowAnalysis,
   onGenerateCoverLetter,
   onDownloadPdf,
   onEdit,
@@ -21,14 +25,24 @@ function JobActions({
 }: JobActionsProps) {
   return (
     <div className="flex flex-col gap-2">
-      <button
-        type="button"
-        onClick={onAnalyze}
-        disabled={analyzing}
-        className="w-full border border-copper bg-copper px-3 py-2 text-left text-xs font-medium text-whitewarm transition-colors duration-150 hover:bg-copper-dark disabled:cursor-not-allowed disabled:border-line disabled:bg-line disabled:text-muted"
-      >
-        {analyzing ? "Analyzing..." : "Analyze Job"}
-      </button>
+      {hasAnalysis ? (
+        <button
+          type="button"
+          onClick={onShowAnalysis}
+          className="w-full border border-moss bg-moss/10 px-3 py-2 text-left text-xs font-medium text-ink transition-colors duration-150 hover:border-moss hover:bg-moss/20"
+        >
+          ✓ Analysis available · View analysis
+        </button>
+      ) : (
+        <button
+          type="button"
+          onClick={onAnalyze}
+          disabled={analyzing}
+          className="w-full border border-copper bg-copper px-3 py-2 text-left text-xs font-medium text-whitewarm transition-colors duration-150 hover:bg-copper-dark disabled:cursor-not-allowed disabled:border-line disabled:bg-line disabled:text-muted"
+        >
+          {analyzing ? "Analyzing..." : "Analyze Job"}
+        </button>
+      )}
 
       <button
         type="button"
